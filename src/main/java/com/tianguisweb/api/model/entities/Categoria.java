@@ -17,7 +17,6 @@ public class Categoria implements Serializable {
 	
 	private String descripcion;
 
-
 	public Long getId() {
 		return id;
 	}
@@ -42,6 +41,6 @@ public class Categoria implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-
+	
 
 }
