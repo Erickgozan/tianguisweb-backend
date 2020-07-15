@@ -42,7 +42,7 @@ public class ProductoController {
 	//guardar productos
 	@PostMapping("/save")
 	public ResponseEntity<?> saveProduct(@Valid Producto producto, BindingResult result,
-			@Valid @RequestParam MultipartFile file1, @RequestParam MultipartFile file2, @RequestParam MultipartFile file3,
+			@RequestParam MultipartFile file1, @RequestParam MultipartFile file2, @RequestParam MultipartFile file3,
 			@RequestParam MultipartFile file4, @RequestParam MultipartFile file5) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
