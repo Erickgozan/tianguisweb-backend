@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -24,73 +22,72 @@ import com.tianguisweb.api.model.services.IUploadFileService;
 
 @RestController
 @CrossOrigin(origins = { "http://localhost:4200" })
-@RequestMapping("/api")
+@RequestMapping("/productos")
 public class ProductoController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProductoController.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(ProductoController.class);
 
 	@Autowired
 	private IProductoService productoService;
 
 	@Autowired
 	private IUploadFileService fileService;
-
-	@GetMapping("/productos")
+	
+	//Listar productos
+	@GetMapping
 	public List<Producto> productList() {
 		return productoService.findAllProductos();
 	}
+	
+	//guardar productos
+	@PostMapping("/save")
+	public ResponseEntity<?> saveProduct(@Valid Producto producto, BindingResult result,
+			@Valid @RequestParam MultipartFile file1, @RequestParam MultipartFile file2, @RequestParam MultipartFile file3,
+			@RequestParam MultipartFile file4, @RequestParam MultipartFile file5) {
 
-	@PostMapping("/productos")
-	public ResponseEntity<Producto> saveProduct(@RequestParam MultipartFile file1, @RequestParam MultipartFile file2,
-			@RequestParam MultipartFile file3, @RequestParam MultipartFile file4, @RequestParam MultipartFile file5,
-			Producto producto) {
-		
+		Map<String, Object> response = new HashMap<String, Object>();
 		Producto nuevoProducto = null;
 		String img1 = null, img2 = null, img3 = null, img4 = null, img5 = null;
+		
+		if (result.hasErrors()) {
+			List<String> errores = result.getFieldErrors().stream()
+					.map(e -> "El campo '" + e.getField() + "' " + e.getDefaultMessage()).collect(Collectors.toList());
+			response.put("error", errores);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		}
 
 		try {
-			//Guardar la ruta de las imagenes
+			// Guardar la ruta de las imagenes
 			img1 = fileService.uploadFile(file1);
 			img2 = fileService.uploadFile(file2);
 			img3 = fileService.uploadFile(file3);
 			img4 = fileService.uploadFile(file4);
 			img5 = fileService.uploadFile(file5);
-			//Establecer las rutas al objeto producto
+			// Establecer las rutas al objeto producto
 			producto.setImg1(img1);
 			producto.setImg2(img2);
 			producto.setImg3(img3);
 			producto.setImg4(img4);
 			producto.setImg5(img5);
 
+			if (producto != null && producto instanceof Producto) {
+				nuevoProducto = productoService.saveProducto(producto);
+			}
+
 		} catch (IOException e) {
-			LOG.error("Error al subir la imagen " + e.getMessage() + " : " + e.getCause());
-		}
-		
-		if (producto != null) {
-			nuevoProducto = productoService.saveProducto(producto);
+			response.put("error", "Error al subir las imagenes" + e.getLocalizedMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (DataAccessException e) {
+			response.put("error", "Error al insertar el producto a la base de datos " + e.getLocalizedMessage() + " "
+					+ e.getMostSpecificCause());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED);
+		response.put("mensaje", "El producto se agrego correctamente");
+		response.put("producto", nuevoProducto);
+
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
-	/*
-	 * Map<String, Object> mensaje = new HashMap<String, Object>(); Producto
-	 * productoNuevo = null;
-	 * 
-	 * if (result.hasErrors()) { List<String> errors =
-	 * result.getFieldErrors().stream() .map(err -> "El campo" + err.getField() +
-	 * " " + err.getDefaultMessage()) .collect(Collectors.toList());
-	 * mensaje.put("errors", errors); return new ResponseEntity<Map<String,
-	 * Object>>(mensaje, HttpStatus.BAD_REQUEST); }
-	 * 
-	 * try { productoNuevo = productoService.saveProducto(producto); } catch
-	 * (DataAccessException e) { mensaje.put("mensaje",
-	 * "Error al realizar el insert a la base de datos"); mensaje.put("error",
-	 * e.getLocalizedMessage() + " " + e.getMostSpecificCause()); }
-	 * 
-	 * mensaje.put("producto", productoNuevo); mensaje.put("mensaje",
-	 * "El producto se agrego con éxito");
-	 * 
-	 */
-
+	
 }
