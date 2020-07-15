@@ -29,6 +29,8 @@ public class UploadFileServiceImpl implements IUploadFileService {
 
 		if (!nombreArchivo.isEmpty()) {
 			Files.copy(nombreArchivo.getInputStream(), ruta);
+		}else {
+			filename = null;
 		}
 
 		return filename;
@@ -38,9 +40,13 @@ public class UploadFileServiceImpl implements IUploadFileService {
 	public boolean isExist(String nombreArchivoAnterior) {
 
 		if (nombreArchivoAnterior != null) {
-			Path rutaArchivoAnterior = Paths.get("uploads/products").toAbsolutePath().resolve(nombreArchivoAnterior)
-					.toAbsolutePath();
-			File archivoAnterior = rutaArchivoAnterior.toFile();
+			StringBuilder rutaAnterior = new StringBuilder();
+			rutaAnterior.append(System.getProperty("user.dir"));
+			rutaAnterior.append(File.separator);
+			rutaAnterior.append("uploads".concat(File.separator).concat("products"));
+			rutaAnterior.append(File.separator);
+			rutaAnterior.append(nombreArchivoAnterior);	
+			File archivoAnterior = Paths.get(rutaAnterior.toString()).toFile();
 			if (archivoAnterior.exists() && archivoAnterior.canRead()) {
 				return archivoAnterior.delete();
 			}
@@ -82,5 +88,11 @@ public class UploadFileServiceImpl implements IUploadFileService {
 		
 		return carpeta.toPath().resolve(nombreArchivo);
 	}
+	
+	
+	/*forma alternativa de agregar la ruta de user dir 
+	 * Path rutaArchivoAnterior = Paths.get("uploads".concat(File.separator).concat("products"))
+	 * .toAbsolutePath().resolve(nombreArchivoAnterior).toAbsolutePath();	
+	 * */
 
 }
