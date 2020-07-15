@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "productos")
@@ -13,16 +16,18 @@ public class Producto implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
+	@NotBlank(message = "no pede estar vació")
 	private String nombre;
-	
+	@NotNull(message = "no puede estar vació")
 	private Double precio;
-	
+	@NotBlank(message = "no puede estar vació")
+	@Column(length = 500)
 	private String descripcion;
-	
-	private Integer cantidad;
-	
-	private Boolean disponibilidad;
+	@NotBlank(message = "no puede estar vació")
+	@Column(length = 500)
+	private String caracteristicas;
+	@NotNull(message = "no puede estar vació")
+	private Integer stock;
 	
 	private Boolean oferta;
 	
@@ -30,24 +35,31 @@ public class Producto implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
 	
+	//@NotNull(message = "no puede estar vació")
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "categoria_producto")
+	@JoinColumn(name = "categoria_id")
+	@JsonIgnoreProperties({"productos","hibernateLazyInitializer","handler"})
 	private Categoria categoria;
 	
-	@CollectionTable(name = "img_1")
+	@Column(name = "img_1")
 	private String img1;
 	
-	@CollectionTable(name = "img_2")
+	@Column(name = "img_2")
 	private String img2;
 	
-	@CollectionTable(name = "img_3")
+	@Column(name = "img_3")
 	private String img3;
 	
-	@CollectionTable(name = "img_4")
+	@Column(name = "img_4")
 	private String img4;
 	
-	@CollectionTable(name = "img_5")
+	@Column(name = "img_5")
 	private String img5;
+	
+	@PrePersist
+	public void createAt() {
+		this.createAt = new Date();
+	}
 
 	public Long getId() {
 		return id;
@@ -81,22 +93,22 @@ public class Producto implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public Integer getCantidad() {
-		return cantidad;
+	public String getCaracteristicas() {
+		return caracteristicas;
 	}
 
-	public void setCantidad(Integer cantidad) {
-		this.cantidad = cantidad;
+	public void setCaracteristicas(String caracteristicas) {
+		this.caracteristicas = caracteristicas;
 	}
 
-	public Boolean getDisponibilidad() {
-		return disponibilidad;
+	public Integer getStock() {
+		return stock;
 	}
 
-	public void setDisponibilidad(Boolean disponibilidad) {
-		this.disponibilidad = disponibilidad;
+	public void setStock(Integer cantidad) {
+		this.stock = cantidad;
 	}
-
+	
 	public Boolean getOferta() {
 		return oferta;
 	}
