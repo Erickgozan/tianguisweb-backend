@@ -35,8 +35,8 @@ public class Producto implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
 	
-	//@NotNull(message = "no puede estar vació")
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@NotNull(message = "no puede estar vacío")
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoria_id")
 	@JsonIgnoreProperties({"productos","hibernateLazyInitializer","handler"})
 	private Categoria categoria;
