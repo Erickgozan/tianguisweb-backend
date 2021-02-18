@@ -1,54 +1,54 @@
 package com.tianguisweb.api.model.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "clientes")
-@PrimaryKeyJoinColumn(name = "usuario_id")
+@PrimaryKeyJoinColumn(name = "id")
 public class Cliente extends Usuario implements Serializable {
 	private static final long serialVersionUID = 5595868450556698746L;
-
-	private Integer edad;
 	
+	@NotBlank(message = "no puede estar vació")
 	private String nombre;
-	
+	@NotBlank(message = "no puede estar vació")
 	@Column(name = "apellido_paterno")
 	private String apellidoPaterno;
-	
+	@NotBlank(message = "no puede estar vació")
 	@Column(name = "apellido_materno")
 	private String apellidoMaterno;
 	
-	private String telefono;	
-	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "direccion_cliente")
-	private Direccion direcciones;
-	
-	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinTable(name = "clientes_productos", joinColumns = @JoinColumn(name="cliente_id"), 
-	inverseJoinColumns = @JoinColumn(name="producto_id"), 
-	uniqueConstraints = @UniqueConstraint(columnNames = {"cliente_id","producto_id"}))
+	@NotBlank(message = "no puede estar vació")
+	private String telefono;
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "direccion_id")
+	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+	private Direccion direccion;
+
+	@ManyToMany(fetch = FetchType.LAZY )
+	@JoinTable(name = "clientes_productos", joinColumns = @JoinColumn(name = "cliente_id"),
+	inverseJoinColumns = @JoinColumn(name = "producto_id"),
+	uniqueConstraints = @UniqueConstraint(columnNames = {
+			"cliente_id", "producto_id" }))
 	private List<Producto> productos;
 	
 	@Column(name = "fecha_compra")
 	@Temporal(TemporalType.DATE)
 	private Date fechaCompra;
 	
-	@Column(name = "foto_perfil")
-	private String fotoPerfil;
-
-	public Integer getEdad() {
-		return edad;
+	public Cliente() {
+		this.productos = new ArrayList<Producto>();
 	}
-
-	public void setEdad(Integer edad) {
-		this.edad = edad;
-	}
+	
 
 	public String getNombre() {
 		return nombre;
@@ -82,12 +82,12 @@ public class Cliente extends Usuario implements Serializable {
 		this.telefono = telefono;
 	}
 
-	public Direccion getDirecciones() {
-		return direcciones;
+	public Direccion getDireccion() {
+		return direccion;
 	}
-
-	public void setDirecciones(Direccion direcciones) {
-		this.direcciones = direcciones;
+	
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
 	}
 
 	public List<Producto> getProductos() {
@@ -95,6 +95,7 @@ public class Cliente extends Usuario implements Serializable {
 	}
 
 	public void setProductos(List<Producto> productos) {
+		
 		this.productos = productos;
 	}
 
@@ -106,12 +107,5 @@ public class Cliente extends Usuario implements Serializable {
 		this.fechaCompra = fechaCompra;
 	}
 
-	public String getFotoPerfil() {
-		return fotoPerfil;
-	}
-
-	public void setFotoPerfil(String fotoPerfil) {
-		this.fotoPerfil = fotoPerfil;
-	}
 
 }
