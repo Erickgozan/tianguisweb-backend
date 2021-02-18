@@ -15,22 +15,15 @@ public class Direccion implements Serializable {
 	private Long id;
 	
 	private String calle;
-	
 	private String colonia;
-	
 	@Column(name = "no_exterior")
 	private Integer noExterior;
-	
 	@Column(name = "no_interior")
 	private Integer noInterior;
-	
 	private String municipio;
-	
 	private Integer cp;
-	
 	private String estado;
-	
-	@OneToMany(mappedBy = "direcciones")
+	@OneToMany(mappedBy = "direccion")
 	private List<Cliente> clientes;
 
 	public Long getId() {
@@ -97,12 +90,12 @@ public class Direccion implements Serializable {
 		this.estado = estado;
 	}
 
-	public List<Cliente> getUsuarios() {
+	/*public List<Cliente> getUsuarios() {
 		return clientes;
 	}
 
 	public void setUsuarios(List<Cliente> clientes) {
 		this.clientes = clientes;
-	}
+	}*/
 
 }
