@@ -14,6 +14,9 @@ public interface IUploadFileService {
 
 	// Evalua si el archivo existe
 	public boolean isExist(String nombreArchivoAnterior);
+	
+	// Guardar multiples archivos
+	//public void saveAll(List<MultipartFile> files) throws IOException;
 
 	// Visualiza el archivo
 	public Resource viewFile(String nombreArchivo) throws MalformedURLException;
