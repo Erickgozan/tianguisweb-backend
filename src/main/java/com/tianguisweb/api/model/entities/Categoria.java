@@ -3,6 +3,7 @@ package com.tianguisweb.api.model.entities;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "categorias")
@@ -12,7 +13,7 @@ public class Categoria implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+	@NotBlank(message = "no puede estar vacío")
 	private String nombre;
 
 
