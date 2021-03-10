@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "usuarios")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -13,8 +15,9 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 3333409352469625596L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "uuid2")
+	private String id;
 	
 	@Column(unique = true,length = 20)
 	private String username;	
@@ -45,11 +48,11 @@ public class Usuario implements Serializable {
 		this.createAt = new Date();
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
