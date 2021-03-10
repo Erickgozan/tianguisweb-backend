@@ -53,13 +53,13 @@ public class ProductoController {
 	
 	// Buscar un producto por su id
 	@GetMapping("/productos/{id}")
-	public ResponseEntity<?> productId(@PathVariable Long id) {
+	public ResponseEntity<?> productId(@PathVariable String id) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		Producto producto = productoService.findProductoById(id);
 
 		if (producto == null) {
-			response.put("error_400",
+			response.put("error_404",
 					"El producto con id: '".concat(id.toString()).concat("' no se encontro en la base de datos"));
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		} else {
@@ -70,28 +70,29 @@ public class ProductoController {
 	// Guardar productos
 	@PostMapping("/productos/create")
 	public ResponseEntity<?> saveProduct(@Valid Producto producto, BindingResult result,
-			@RequestParam MultipartFile file[]) {
+			@RequestPart MultipartFile file[]) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		Producto nuevoProducto = null;
 		String img1 = null, img2 = null, img3 = null, img4 = null, img5 = null;
 
 		if (result.hasErrors()) {
-			List<String> errores = result.getFieldErrors().stream()
-					.map(e -> "El campo '" + e.getField() + "' " + e.getDefaultMessage()).collect(Collectors.toList());
+			List<String> errores = result.getFieldErrors()
+					.stream()
+					.map(e -> "El campo '" + e.getField() + "' " + e.getDefaultMessage())
+					.collect(Collectors.toList());
 			response.put("error_400", errores);
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
 		try {
-			// fileService.saveAll(nombreArchivo)
 			// Guardar la ruta de las imagenes
 			img1 = fileService.uploadFile(file[0]);
 			img2 = fileService.uploadFile(file[1]);
 			img3 = fileService.uploadFile(file[2]);
 			img4 = fileService.uploadFile(file[3]);
 			img5 = fileService.uploadFile(file[4]);
-			// Establecer las rutas al objeto producto
+			// Establecer las rutas de las imagenes en el objeto producto
 			producto.setImg1(img1);
 			producto.setImg2(img2);
 			producto.setImg3(img3);
@@ -142,7 +143,7 @@ public class ProductoController {
 	// Actualizar el producto
 	@PutMapping("productos/update/{id}")
 	public ResponseEntity<?> updateProduct(@Valid @RequestBody Producto producto, BindingResult result,
-			@PathVariable Long id) {
+			@PathVariable String id) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		Producto productoActual = productoService.findProductoById(id);
@@ -186,7 +187,7 @@ public class ProductoController {
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
 
-	// Ver imagen nota: cambiar la ruta de la visualizacion de las imagenes
+	// Ver imagen 
 	@GetMapping("/uploads/img/{nombreArchivo:.+}")
 	public ResponseEntity<Resource> viewImeges(@PathVariable String nombreArchivo) {
 
@@ -203,9 +204,11 @@ public class ProductoController {
 		return new ResponseEntity<Resource>(resource, cabecera, HttpStatus.OK);
 	}
 
-	// Actualizar las imagenes, nota: Se usa el @RequestParam porque la petecion se recibe desde un form-data
+	// Actualizar las imagenes
+	//nota: Se usa el @RequestParam porque la petecion se recibe desde un form-data
+	//y @RequestPart por que se piden archvios MultipartFile.
 	@PutMapping("productos/image/update")
-	public ResponseEntity<?> updateImageProduct(@RequestParam Long id, @RequestParam MultipartFile file[]) {
+	public ResponseEntity<?> updateImageProduct(@RequestParam String id, @RequestPart MultipartFile file[]) {
 
 		Producto productoActual = productoService.findProductoById(id);
 		Producto fotoUpdate = null;
@@ -260,7 +263,7 @@ public class ProductoController {
 					productoActual.setImg5(img1);
 		 }
 		fotoUpdate = productoService.saveProducto(productoActual);
-		response.put("mensaje", "Las imagenes se actualizaron correctamente");
+		response.put("mensaje", "La imagen se actualizó correctamente");
 		response.put("producto", fotoUpdate);
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
@@ -268,48 +271,46 @@ public class ProductoController {
  
 	// Eliminar la imagen
 	@PutMapping("productos/image/delete/{id}")
-	public ResponseEntity<?> deleteImgeProduct(@PathVariable Long id, @RequestParam String img) {
+	public ResponseEntity<?> deleteImgeProduct(@PathVariable String id, @RequestParam String img) {
 
-		Producto producto = productoService.findProductoById(id);
+		Producto productoActual = productoService.findProductoById(id);
 		Map<String, Object> response = new HashMap<String, Object>();
 		
 		try {
 			//Si el producto no se encuentra
-			if (producto == null) {
+			if (productoActual == null) {
 				response.put("error_404", "El producto que desea eliminar con id '".concat(id.toString())
 						.concat("' no se encotro en la base de datos"));
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			} else {
-				if (producto.getImg1().contentEquals(img)) {
-					fileService.isExist(producto.getImg1());
-					producto.setImg1(null);
-				} else if (producto.getImg2().contentEquals(img)) {
-					fileService.isExist(producto.getImg2());
-					producto.setImg2(null);
-				} else if (producto.getImg3().contentEquals(img)) {
-					fileService.isExist(producto.getImg3());
-					producto.setImg3(null);
-				} else if (producto.getImg4().contentEquals(img)) {
-					fileService.isExist(producto.getImg4());
-					producto.setImg4(null);
-				} else if (producto.getImg5().contentEquals(img)) {
-					fileService.isExist(producto.getImg5());
-					producto.setImg5(null);
-				} else {
-					response.put("error_500", "La imagen que desea eliminar no existe '".concat(img)
-							.concat("', por favor verifique el nombre y vuelva a intentar"));
-					return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-				}
+				if (productoActual.getImg1().contentEquals(img)) {
+					fileService.isExist(productoActual.getImg1());
+					productoActual.setImg1(null);
+				} else if (productoActual.getImg2().contentEquals(img)) {
 
+					fileService.isExist(productoActual.getImg2());
+					productoActual.setImg2(null);
+				} else if (productoActual.getImg3().contentEquals(img)) {
+					fileService.isExist(productoActual.getImg3());
+					productoActual.setImg3(null);
+				} else if (productoActual.getImg4().contentEquals(img)) {
+					fileService.isExist(productoActual.getImg4());
+					productoActual.setImg4(null);
+				} else if (productoActual.getImg5().contentEquals(img)) {
+					fileService.isExist(productoActual.getImg5());
+					productoActual.setImg5(null);
+				}
 			}
 		} catch (Exception e) {
-			response.put("error", "La imagen que desea eliminar no existe: '".concat(img)
+			response.put("error_500", "La imagen que desea eliminar no existe: '".concat(img)
 					.concat("', por favor verifique el nombre y vuelva a intentar"));
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
-		productoService.saveProducto(producto);
-		response.put("producto", producto);
-		response.put("mensaje", "El producto con id '".concat(id.toString()).concat("' se ha eliminado correctamente"));
+		productoService.saveProducto(productoActual);
+		response.put("producto", productoActual);
+		response.put("mensaje", "La imagen: '".concat(img).
+				concat("' del producto: '" + productoActual.getNombre())
+				.concat("'. se ha eliminado correctamente."));
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
@@ -317,7 +318,7 @@ public class ProductoController {
 
 	// Eliminar el producto
 	@DeleteMapping("productos/delete/{id}")
-	public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+	public ResponseEntity<?> deleteProduct(@PathVariable String id) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		Producto producto = productoService.findProductoById(id);
