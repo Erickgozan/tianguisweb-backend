@@ -1,83 +1,90 @@
 package com.tianguisweb.api.model.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "productos")
 public class Producto implements Serializable {
 	private static final long serialVersionUID = -7261566280398676761L;
-	
+
+	/*@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator",parameters = {
+	   @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.CustomerVersionOneStretegy")})*/
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="UUID", strategy = "uuid2")
+	private String id;
+
 	@NotBlank(message = "no pede estar vació")
 	private String nombre;
+
 	@NotNull(message = "no puede estar vació")
 	private Double precio;
+
 	@NotBlank(message = "no puede estar vació")
 	@Column(length = 2000)
 	private String descripcion;
+
 	@NotBlank(message = "no puede estar vació")
 	@Column(length = 2000)
 	private String caracteristicas;
+
 	@NotNull(message = "no puede estar vació")
 	private Integer stock;
-	
+
+	@NotNull(message = "no puede estar vació")
 	private Boolean oferta;
-	
+
 	@Column(name = "create_at")
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
-	
-	@NotNull(message = "no puede estar vacío")
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoria_id")
-	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+	@NotNull(message = "no puede estar vacío")
 	private Categoria categoria;
-	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy="productos")
-	@JsonIgnore
-	private List<Cliente> clientes;
-	
-	//@NotNull(message = "no puede estar vacío")
+
+	/*
+	 * @ManyToMany(fetch = FetchType.LAZY, cascade =
+	 * CascadeType.ALL,mappedBy="productos")
+	 * 
+	 * @JsonIgnore private List<Cliente> clientes;
+	 */
+
 	@Column(name = "img_1")
 	private String img1;
-	
+
 	@Column(name = "img_2")
 	private String img2;
-	
+
 	@Column(name = "img_3")
 	private String img3;
-	
+
 	@Column(name = "img_4")
 	private String img4;
-	
+
 	@Column(name = "img_5")
 	private String img5;
-	
-	public Producto() {
-		this.clientes = new ArrayList<Cliente>();
-	}
-	
+
 	@PrePersist
 	public void createAt() {
 		this.createAt = new Date();
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -120,7 +127,7 @@ public class Producto implements Serializable {
 	public void setStock(Integer cantidad) {
 		this.stock = cantidad;
 	}
-	
+
 	public Boolean getOferta() {
 		return oferta;
 	}
@@ -136,7 +143,6 @@ public class Producto implements Serializable {
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
-	
 
 	public Categoria getCategoria() {
 		return categoria;
@@ -144,14 +150,6 @@ public class Producto implements Serializable {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
-	}
-
-	public List<Cliente> getClientes() {
-		return clientes;
-	}
-
-	public void setClientes(List<Cliente> clientes) {
-		this.clientes = clientes;
 	}
 
 	public String getImg1() {
