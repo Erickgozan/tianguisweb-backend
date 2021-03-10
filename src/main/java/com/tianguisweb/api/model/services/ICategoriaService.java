@@ -11,5 +11,5 @@ public interface ICategoriaService {
 	//Eliminar categoria
 	public void deleteCategoria(Categoria categoria);
 	//Actualizar categoria
-	public Categoria findCategoriaById(Long id);
+	public Categoria findCategoriaById(String id);
 }
