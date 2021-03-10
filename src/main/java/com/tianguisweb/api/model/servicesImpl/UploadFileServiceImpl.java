@@ -8,8 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -20,13 +18,16 @@ import com.tianguisweb.api.model.services.IUploadFileService;
 @Service
 public class UploadFileServiceImpl implements IUploadFileService {
 	
-	private static final Logger log = LoggerFactory.getLogger(UploadFileServiceImpl.class);
-
+	//private static final Logger log = LoggerFactory.getLogger(UploadFileServiceImpl.class);
+	
+	//Metodo para subir la imagen
 	@Override
 	public String uploadFile(MultipartFile nombreArchivo) throws IOException {
-
+		
+		//Genera un id a la imagen 
 		String filename = UUID.randomUUID().toString().concat("_").concat(nombreArchivo.getOriginalFilename())
 				.replace(" ", "_");
+		
 		Path rutaArchivo = filePath(filename);
 
 		if (!nombreArchivo.isEmpty()) {
@@ -35,7 +36,8 @@ public class UploadFileServiceImpl implements IUploadFileService {
 		
 		return filename;
 	}
-
+	
+	//Metodo para eliminar la imagen del servidor, si esta ya existe 
 	@Override
 	public boolean isExist(String nombreArchivoAnterior) {
 
@@ -50,6 +52,7 @@ public class UploadFileServiceImpl implements IUploadFileService {
 		return false;
 	}
 	
+	//Metodo para visualizar la imagen.
 	@Override
 	public Resource viewFile(String nombreArchivo) throws MalformedURLException {
 
@@ -69,10 +72,10 @@ public class UploadFileServiceImpl implements IUploadFileService {
 	public Path filePath(String nombreArchivo) {
 		
 		File carpeta = Paths.get("uploads/products").toAbsolutePath().toFile();
+		
 		if (!carpeta.exists()) {
 			carpeta.mkdir();
-		}
-		log.info("La ruta es "+carpeta.toString());
+		}	
 		
 		return carpeta.toPath().resolve(nombreArchivo);
 	}
