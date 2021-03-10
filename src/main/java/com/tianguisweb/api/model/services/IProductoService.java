@@ -17,7 +17,7 @@ public interface IProductoService {
 	public List<Producto> findProductoByCategoria(Categoria categoria);	
 
 	// Retornar el producto por su id
-	public Producto findProductoById(Long id);
+	public Producto findProductoById(String id);
 
 	// Guardar el producto
 	public Producto saveProducto(Producto producto);
