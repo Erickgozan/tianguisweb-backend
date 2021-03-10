@@ -34,7 +34,7 @@ public class CategoriaServiceImpl implements ICategoriaService {
 	
 	//Buscar categoria por su id
 	@Override
-	public Categoria findCategoriaById(Long id) {
+	public Categoria findCategoriaById(String id) {
 
 		return this.categoriaDao.findById(id).orElse(null);
 	}
