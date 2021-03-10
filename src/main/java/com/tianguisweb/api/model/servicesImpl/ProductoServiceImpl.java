@@ -37,12 +37,12 @@ public class ProductoServiceImpl implements IProductoService{
 	public List<Producto> findProductoByCategoria(Categoria categoria) {
 		return this.productoDao.findProductoByCategoria(categoria);
 	}
-
-	//Retorna el producto en base a su id
+	
+	//Buscar el producto por su id
 	@Override
-	public Producto findProductoById(Long id) {
-		return productoDao.findById(id).orElse(null);
-	}
+	public Producto findProductoById(String id) {
+		return this.productoDao.findById(id).orElse(null);
+	}	
 
 	//Guarda el producto
 	@Override
@@ -55,6 +55,8 @@ public class ProductoServiceImpl implements IProductoService{
 	public void deleteProducto(Producto producto) {
 		productoDao.delete(producto);
 	}
+
+		
 
 	
 
