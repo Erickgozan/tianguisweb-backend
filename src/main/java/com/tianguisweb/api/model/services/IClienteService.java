@@ -16,6 +16,6 @@ public interface IClienteService {
 	public void deleteCliente(Cliente cliente);
 	
 	//Retonar un cliente por su id
-	public Cliente findClienteById(Long id);
+	public Cliente findClienteById(String id);
 
 }
