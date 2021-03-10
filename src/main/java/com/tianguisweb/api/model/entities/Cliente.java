@@ -2,12 +2,12 @@ package com.tianguisweb.api.model.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -15,40 +15,34 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @PrimaryKeyJoinColumn(name = "id")
 public class Cliente extends Usuario implements Serializable {
 	private static final long serialVersionUID = 5595868450556698746L;
-	
+
 	@NotBlank(message = "no puede estar vació")
 	private String nombre;
+	
 	@NotBlank(message = "no puede estar vació")
 	@Column(name = "apellido_paterno")
 	private String apellidoPaterno;
-	@NotBlank(message = "no puede estar vació")
+	
 	@Column(name = "apellido_materno")
 	private String apellidoMaterno;
-	
+
 	@NotBlank(message = "no puede estar vació")
 	private String telefono;
 
-
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotNull(message = "(CP, Calle, Colonia, No. Exterior, Municipio, Estado) no pueden estar vaciós")
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "direccion_id")
-	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private Direccion direccion;
 
-	@ManyToMany(fetch = FetchType.LAZY )
-	@JoinTable(name = "clientes_productos", joinColumns = @JoinColumn(name = "cliente_id"),
-	inverseJoinColumns = @JoinColumn(name = "producto_id"),
-	uniqueConstraints = @UniqueConstraint(columnNames = {
-			"cliente_id", "producto_id" }))
-	private List<Producto> productos;
-	
-	@Column(name = "fecha_compra")
-	@Temporal(TemporalType.DATE)
-	private Date fechaCompra;
-	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente",cascade = CascadeType.ALL)
+	//@JsonIgnore
+	private List<Pedido> pedido;
+
+
 	public Cliente() {
-		this.productos = new ArrayList<Producto>();
+		this.pedido = new ArrayList<Pedido>();
 	}
-	
 
 	public String getNombre() {
 		return nombre;
@@ -85,27 +79,18 @@ public class Cliente extends Usuario implements Serializable {
 	public Direccion getDireccion() {
 		return direccion;
 	}
-	
+
 	public void setDireccion(Direccion direccion) {
 		this.direccion = direccion;
 	}
 
-	public List<Producto> getProductos() {
-		return productos;
+	public List<Pedido> getPedido() {
+		return pedido;
 	}
 
-	public void setProductos(List<Producto> productos) {
-		
-		this.productos = productos;
+	public void setPedido(List<Pedido> pedido) {
+		this.pedido = pedido;
 	}
-
-	public Date getFechaCompra() {
-		return fechaCompra;
-	}
-
-	public void setFechaCompra(Date fechaCompra) {
-		this.fechaCompra = fechaCompra;
-	}
-
+	
 
 }
