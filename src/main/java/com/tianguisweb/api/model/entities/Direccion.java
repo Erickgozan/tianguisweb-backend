@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "direcciones")
@@ -11,26 +15,40 @@ public class Direccion implements Serializable {
 	private static final long serialVersionUID = 4864288427892749481L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "uuid2")
+	private String id;
+
+	@NotBlank(message = "no puede estar vació")
 	private String calle;
+
+	@NotBlank(message = "no puede estar vació")
 	private String colonia;
+
 	@Column(name = "no_exterior")
+	@NotNull(message = "no puede estar vació")
 	private Integer noExterior;
+
 	@Column(name = "no_interior")
 	private Integer noInterior;
+
+	@NotBlank(message = "no puede estar vació")
 	private String municipio;
-	private Integer cp;
+
+	@NotNull(message = "no puede estar vació")
+	Integer cp;
+
+	@NotBlank(message = "no puede estar vació")
 	private String estado;
+	
 	@OneToMany(mappedBy = "direccion")
 	private List<Cliente> clientes;
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -90,12 +108,6 @@ public class Direccion implements Serializable {
 		this.estado = estado;
 	}
 
-	/*public List<Cliente> getUsuarios() {
-		return clientes;
-	}
 
-	public void setUsuarios(List<Cliente> clientes) {
-		this.clientes = clientes;
-	}*/
 
 }
