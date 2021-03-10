@@ -33,10 +33,26 @@ public class ClienteController {
 	@Autowired
 	private IClienteService clienteService;
 
-	// Retornar lista de clientes
+	// rETORNAR LA LISTA DE CLIENTES
 	@GetMapping("/clientes")
 	public List<Cliente> ClientList() {
 		return this.clienteService.findAll();
+	}
+
+	// BUSCAR EL CLIENTE
+	@GetMapping("/clientes/{id}")
+	public ResponseEntity<?> findCustumerById(@PathVariable String id) {
+
+		Map<String, Object> response = new HashMap<String, Object>();
+		Cliente cliente = this.clienteService.findClienteById(id);
+
+		if (cliente == null) {
+			response.put("error_400", "El cliente no se necontro en la base de datos!");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+
+		}
+
+		return new ResponseEntity<>(cliente, HttpStatus.OK);
 	}
 
 	// GUARDAR AL CLIENTE
@@ -44,12 +60,11 @@ public class ClienteController {
 	public ResponseEntity<?> saveCustomer(@Valid @RequestBody Cliente cliente, BindingResult result) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
-		Cliente nuevoCliente = null;
+		Cliente newCustomer = null;
 
 		if (result.hasErrors()) {
 			List<String> errores = result.getFieldErrors().stream()
-					.map(e -> "El campo " + e.getField()+ " " + e.getDefaultMessage())
-					.collect(Collectors.toList());
+					.map(e -> "El campo " + e.getField() + " " + e.getDefaultMessage()).collect(Collectors.toList());
 			response.put("error_400", errores);
 
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -57,9 +72,14 @@ public class ClienteController {
 		}
 
 		try {
-			nuevoCliente = this.clienteService.saveCliente(cliente);
-			response.put("mensaje", "El cliente se agrego éxitosamente!");
-			response.put("cliente", nuevoCliente);
+			newCustomer = this.clienteService.saveCliente(cliente);
+			response.put("mensaje",
+					newCustomer.getApellidoMaterno() == null
+							? "Bienvenido(a)  " + newCustomer.getNombre() + " " + newCustomer.getApellidoPaterno()
+							: "Bienvenido(a)  " + newCustomer.getNombre() + " " + newCustomer.getApellidoPaterno() + " "
+									+ newCustomer.getApellidoMaterno());
+
+			response.put("cliente", newCustomer);
 		} catch (DataAccessException e) {
 			response.put("error_500", "Error al guardar el cliente " + e.getLocalizedMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,52 +87,56 @@ public class ClienteController {
 
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
-	
-	//ACTUALIZAR EL CLIENTE
+
+	// ACTUALIZAR EL CLIENTE
 	@PutMapping("/clientes/update/{id}")
-	public ResponseEntity<?> updateCustomer(@Valid @RequestBody Cliente cliente, 
-			 BindingResult result, @PathVariable Long id){
-		
+	public ResponseEntity<?> updateCustomer(@Valid @RequestBody Cliente cliente, BindingResult result,
+			@PathVariable String id) {
+
 		Cliente currentCustomer = this.clienteService.findClienteById(id);
-		Cliente newCustomer=null;
+		Cliente newCustomer = null;
 		Map<String, Object> response = new HashMap<String, Object>();
-		
-		//Evalar si el cliente existe
-		if(currentCustomer==null) {		
-			 response.put("error_404","El cliente no existe en la base de datos");
-			 return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+
+		// Evalar si el cliente existe
+		if (currentCustomer == null) {
+			response.put("error_404", "El cliente no existe en la base de datos");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
-		
-		//Evaluamos que los campos no esten vacios 
-		if(result.hasErrors()) {
+
+		// Evaluamos que los campos no esten vacios
+		if (result.hasErrors()) {
 			List<String> errores = result.getFieldErrors().stream()
-									.map(e -> "El campo: " + e.getField() + " " + e.getDefaultMessage())
-									.collect(Collectors.toList());
-			response.put("error_400",errores);
-			return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+					.map(e -> "El campo: " + e.getField() + " " + e.getDefaultMessage()).collect(Collectors.toList());
+			response.put("error_400", errores);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		//Establecemos los nuevos valores al nevo cliente
-		try {	
+
+		// Establecemos los nuevos valores al nevo cliente
+		try {
 			currentCustomer.setNombre(cliente.getNombre());
 			currentCustomer.setApellidoPaterno(cliente.getApellidoPaterno());
 			currentCustomer.setApellidoMaterno(cliente.getApellidoMaterno());
 			currentCustomer.setTelefono(cliente.getTelefono());
 			currentCustomer.setDireccion(cliente.getDireccion());
-			currentCustomer.setProductos(cliente.getProductos());
-			currentCustomer.setFechaCompra(cliente.getFechaCompra());
-			
+			currentCustomer.setPedido(cliente.getPedido());
+
 			newCustomer = this.clienteService.saveCliente(currentCustomer);
-			
-		}catch(DataAccessException e) {
-			response.put("error_500","Error al actualizar el cliente: " + e.getLocalizedMessage());
-			return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+
+		} catch (DataAccessException e) {
+			response.put("error_500", "Error al actualizar el cliente: " + e.getLocalizedMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		response.put("mensaje","El cliente se ha actializado con éxito");
-		response.put("cliente",newCustomer);
-		
-		return new ResponseEntity<>(response,HttpStatus.CREATED);
+
+		response.put("mensaje",
+				newCustomer.getApellidoMaterno() == null
+						? "Listo " + newCustomer.getNombre() + " " + newCustomer.getApellidoPaterno()
+								+ " tus datos han sido actualizados."
+						: "Listo " + newCustomer.getNombre() + " " + newCustomer.getApellidoPaterno() + " "
+								+ newCustomer.getApellidoMaterno() + " tus datos han sido actualizados.");
+
+		response.put("cliente", newCustomer);
+
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
-	
+
 }
