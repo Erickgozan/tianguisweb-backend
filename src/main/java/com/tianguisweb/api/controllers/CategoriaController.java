@@ -62,7 +62,7 @@ public class CategoriaController {
 	// Metodo PUT para editar la categoria
 	@PutMapping("productos/categorias/update/{id}")
 	public ResponseEntity<?> updateCategories(@Valid @RequestBody Categoria categoria, BindingResult result,
-			@PathVariable Long id) {
+			@PathVariable String id) {
 
 		Categoria categoriaActural = this.categoriaService.findCategoriaById(id);
 		Categoria nuevaCategoria = null;
@@ -97,7 +97,7 @@ public class CategoriaController {
 
 	// Metodo DELETE para eliminar la categoria
 	@DeleteMapping("productos/categorias/delete/{id}")
-	public ResponseEntity<?> deleteCategories(@PathVariable Long id) {
+	public ResponseEntity<?> deleteCategories(@PathVariable String id) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		Categoria categoria = this.categoriaService.findCategoriaById(id);
