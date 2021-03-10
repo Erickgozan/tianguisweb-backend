@@ -39,7 +39,7 @@ public class ClienteServiceImpl implements IClienteService {
 
 	// Retorna el cliente por su id
 	@Override
-	public Cliente findClienteById(Long id) {
+	public Cliente findClienteById(String id) {
 		return this.clienteDao.findById(id).orElse(null);
 	}
 
