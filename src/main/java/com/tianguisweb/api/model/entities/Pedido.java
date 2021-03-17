@@ -1,6 +1,7 @@
 package com.tianguisweb.api.model.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,15 +21,16 @@ public class Pedido implements Serializable {
 	@GenericGenerator(name = "UUID", strategy = "uuid2")
 	private String id;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cliente_id")
-	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+	@JsonIgnoreProperties({"pedidos", "hibernateLazyInitializer", "handler" })
 	private Cliente cliente;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	
 	@JoinColumn(name = "pedido_id")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value={"hibernateLazyInitializer","handler"}, allowSetters = true)
-	private List<ItemProducto> productos;
+	private List<ItemProducto> itemProductos;
 
 	@Column(name = "precio_total")
 	private Integer precioTotal;
@@ -39,7 +41,16 @@ public class Pedido implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "create_at")
 	private Date createAt;
-
+	
+	public Pedido() {
+		this.itemProductos = new ArrayList<ItemProducto>();
+	}
+		
+	@PrePersist
+	public void crateAt() {
+		this.createAt = new Date();
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -57,12 +68,12 @@ public class Pedido implements Serializable {
 	}
 	
 
-	public List<ItemProducto> getProductos() {
-		return productos;
+	public List<ItemProducto> getItemProductos() {
+		return itemProductos;
 	}
 
-	public void setProductos(List<ItemProducto> productos) {
-		this.productos = productos;
+	public void setItemProducto(List<ItemProducto> itemProductos) {
+		this.itemProductos = itemProductos;
 	}
 
 	public Integer getPrecioTotal() {
@@ -80,7 +91,7 @@ public class Pedido implements Serializable {
 	public void setEstado(EstadoPedido estado) {
 		this.estado = estado;
 	}
-
+	
 	public Date getCreateAt() {
 		return createAt;
 	}
