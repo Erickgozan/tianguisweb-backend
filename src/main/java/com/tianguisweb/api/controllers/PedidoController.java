@@ -44,7 +44,7 @@ public class PedidoController {
 	
 	//Guardar el pedido
 	@PostMapping("/pedidos/create")
-	public ResponseEntity<?> sevePedido(Pedido pedido){
+	public ResponseEntity<?> sevePedido(@RequestBody Pedido pedido){
 		
 		Pedido nuevoPedido = null;
 		Map<String,Object> response = new HashMap<String, Object>();
@@ -58,7 +58,7 @@ public class PedidoController {
 		}
 		
 		response.put("producto",nuevoPedido);
-		response.put("mesnaje","El producto se ha guardado con éxito");
+		response.put("mensaje","El pedido se ha guardado con éxito");
 		
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
