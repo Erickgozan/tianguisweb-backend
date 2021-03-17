@@ -71,10 +71,11 @@ public class UploadFileServiceImpl implements IUploadFileService {
 	@Override
 	public Path filePath(String nombreArchivo) {
 		
+		
 		File carpeta = Paths.get("uploads/products").toAbsolutePath().toFile();
 		
 		if (!carpeta.exists()) {
-			carpeta.mkdir();
+			carpeta.mkdirs();
 		}	
 		
 		return carpeta.toPath().resolve(nombreArchivo);
