@@ -118,7 +118,7 @@ public class ClienteController {
 			currentCustomer.setApellidoMaterno(cliente.getApellidoMaterno());
 			currentCustomer.setTelefono(cliente.getTelefono());
 			currentCustomer.setDireccion(cliente.getDireccion());
-			currentCustomer.setPedido(cliente.getPedido());
+			currentCustomer.setPedidos(cliente.getPedidos());
 
 			newCustomer = this.clienteService.saveCliente(currentCustomer);
 
