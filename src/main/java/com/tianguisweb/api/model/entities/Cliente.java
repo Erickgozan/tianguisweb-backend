@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -15,7 +14,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @PrimaryKeyJoinColumn(name = "id")
 public class Cliente extends Usuario implements Serializable {
 	private static final long serialVersionUID = 5595868450556698746L;
-
+	
+	
 	@NotBlank(message = "no puede estar vació")
 	private String nombre;
 	
@@ -25,7 +25,7 @@ public class Cliente extends Usuario implements Serializable {
 	
 	@Column(name = "apellido_materno")
 	private String apellidoMaterno;
-
+ 
 	@NotBlank(message = "no puede estar vació")
 	private String telefono;
 
@@ -36,13 +36,14 @@ public class Cliente extends Usuario implements Serializable {
 	private Direccion direccion;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente",cascade = CascadeType.ALL)
-	//@JsonIgnore
-	private List<Pedido> pedido;
+	@JsonIgnoreProperties(value={"cliente","hibernateLazyInitializer","handler"})
+	private List<Pedido> pedidos;
 
 
 	public Cliente() {
-		this.pedido = new ArrayList<Pedido>();
+		this.pedidos = new ArrayList<Pedido>();
 	}
+		
 
 	public String getNombre() {
 		return nombre;
@@ -84,12 +85,12 @@ public class Cliente extends Usuario implements Serializable {
 		this.direccion = direccion;
 	}
 
-	public List<Pedido> getPedido() {
-		return pedido;
+	public List<Pedido> getPedidos() {
+		return pedidos;
 	}
 
-	public void setPedido(List<Pedido> pedido) {
-		this.pedido = pedido;
+	public void setPedidos(List<Pedido> pedidos) {
+		this.pedidos = pedidos;
 	}
 	
 
