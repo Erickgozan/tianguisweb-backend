@@ -53,13 +53,6 @@ public class Producto implements Serializable {
 	@NotNull(message = "no puede estar vacío")
 	private Categoria categoria;
 
-	/*
-	 * @ManyToMany(fetch = FetchType.LAZY, cascade =
-	 * CascadeType.ALL,mappedBy="productos")
-	 * 
-	 * @JsonIgnore private List<Cliente> clientes;
-	 */
-
 	@Column(name = "img_1")
 	private String img1;
 
