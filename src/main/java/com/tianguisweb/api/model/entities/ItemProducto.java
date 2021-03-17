@@ -9,7 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "items_productos")
+@Table(name = "item_productos")
 public class ItemProducto implements Serializable {
 		
 	private static final long serialVersionUID = -7727558912870993513L;
@@ -25,7 +25,8 @@ public class ItemProducto implements Serializable {
 	private Producto producto;
 	
 	private Integer cantidad;
-
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -33,7 +34,7 @@ public class ItemProducto implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	
 	public Producto getProducto() {
 		return producto;
 	}
@@ -42,12 +43,18 @@ public class ItemProducto implements Serializable {
 		this.producto = producto;
 	}
 
+
 	public Integer getCantidad() {
 		return cantidad;
 	}
 
 	public void setCantidad(Integer cantidad) {
 		this.cantidad = cantidad;
+	}
+	
+	public Double getTotal() {
+		
+		return this.cantidad.doubleValue() * this.producto.getPrecio();
 	}
 	
 	
