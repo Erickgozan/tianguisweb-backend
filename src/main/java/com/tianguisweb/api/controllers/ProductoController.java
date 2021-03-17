@@ -74,7 +74,7 @@ public class ProductoController {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		Producto nuevoProducto = null;
-		String img1 = null, img2 = null, img3 = null, img4 = null, img5 = null;
+		String img1 = "", img2 = "", img3 = "", img4 = "", img5 = "";
 
 		if (result.hasErrors()) {
 			List<String> errores = result.getFieldErrors()
@@ -107,30 +107,30 @@ public class ProductoController {
 					+ " " + e.getMostSpecificCause());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			if (img1 != null) {
+			if (!img1.equals("")) {
 				producto.setImg1(img1);
 			} else {
-				img1 = null;
+				producto.setImg1(""); 
 			}
-			if (img2 != null) {
+			if (!img2.equals("")) {
 				producto.setImg2(img2);
 			} else {
-				img2 = null;
+				producto.setImg2("");
 			}
-			if (img3 != null) {
+			if (!img3.equals("")) {
 				producto.setImg3(img3);
 			} else {
-				img3 = null;
+				producto.setImg3("");
 			}
-			if (img4 != null) {
+			if (!img4.equals("")) {
 				producto.setImg4(img4);
 			} else {
-				img4 = null;
+				producto.setImg4("");
 			}
-			if (img5 != null) {
+			if (!img5.equals("")) {
 				producto.setImg5(img5);
 			} else {
-				img5 = null;
+				producto.setImg5("");
 			}
 		}
 		nuevoProducto = productoService.saveProducto(producto);
@@ -250,16 +250,17 @@ public class ProductoController {
 			response.put("error_500", "Error al subir el archivo " + e.getLocalizedMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (ArrayIndexOutOfBoundsException e) {
-				LOG.info("No hizo falta el switch");
-				if (productoActual.getImg1() == null)
+				if (productoActual.getImg1().equals("")) {
 					productoActual.setImg1(img1);
-				else if (productoActual.getImg2() == null)
+					LOG.info("Estas en el if de la imagen: " + productoActual.getImg1());
+				}
+				else if (productoActual.getImg2().equals(""))
 					productoActual.setImg2(img1);
-				else if (productoActual.getImg3() == null)
+				else if (productoActual.getImg3().equals(""))
 					productoActual.setImg3(img1);
-				else if (productoActual.getImg4() == null)
+				else if (productoActual.getImg4().equals(""))
 					productoActual.setImg4(img1);
-				else if (productoActual.getImg5() == null)
+				else if (productoActual.getImg5().equals(""))
 					productoActual.setImg5(img1);
 		 }
 		fotoUpdate = productoService.saveProducto(productoActual);
@@ -283,27 +284,36 @@ public class ProductoController {
 						.concat("' no se encotro en la base de datos"));
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			} else {
-				if (productoActual.getImg1().contentEquals(img)) {
+				if (productoActual.getImg1().equals(img)) {
 					fileService.isExist(productoActual.getImg1());
-					productoActual.setImg1(null);
-				} else if (productoActual.getImg2().contentEquals(img)) {
-
+					productoActual.setImg1("");
+				} else if (productoActual.getImg2().equals(img)) {
+					
 					fileService.isExist(productoActual.getImg2());
-					productoActual.setImg2(null);
-				} else if (productoActual.getImg3().contentEquals(img)) {
+					productoActual.setImg2("");
+				} else if (productoActual.getImg3().equals(img)) {
+					
 					fileService.isExist(productoActual.getImg3());
-					productoActual.setImg3(null);
-				} else if (productoActual.getImg4().contentEquals(img)) {
+					productoActual.setImg3("");
+				} else if (productoActual.getImg4().equals(img)) {
+					
 					fileService.isExist(productoActual.getImg4());
-					productoActual.setImg4(null);
-				} else if (productoActual.getImg5().contentEquals(img)) {
+					productoActual.setImg4("");
+				} else if (productoActual.getImg5().equals(img)) {
+					
 					fileService.isExist(productoActual.getImg5());
-					productoActual.setImg5(null);
+					productoActual.setImg5("");
 				}
+				
+				LOG.info("Item 1 " + productoActual.getImg1()+
+						"Item 2 "+ productoActual.getImg2() + "Item 3 " + productoActual.getImg3()
+						+ "Item 4 "+ productoActual.getImg4() + "Item 5 "+ productoActual.getImg5());
 			}
 		} catch (Exception e) {
 			response.put("error_500", "La imagen que desea eliminar no existe: '".concat(img)
-					.concat("', por favor verifique el nombre y vuelva a intentar"));
+					.concat("', por favor verifique el nombre y vuelva a intentar")
+					.concat("Error de tipo: ")
+					.concat(e.getLocalizedMessage()));
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		productoService.saveProducto(productoActual);
