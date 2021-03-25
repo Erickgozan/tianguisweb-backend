@@ -2,17 +2,16 @@ package com.tianguisweb.api.model.servicesImpl;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tianguisweb.api.model.daos.IPedidoDao;
 import com.tianguisweb.api.model.entities.Pedido;
 import com.tianguisweb.api.model.services.IPedidoService;
 
-@Service
 @Transactional
+@Service
 public class PedidoServiceImpl implements IPedidoService {
 	
 	@Autowired
