@@ -1,6 +1,7 @@
 package com.tianguisweb.api.model.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -43,6 +44,10 @@ public class Direccion implements Serializable {
 	
 	@OneToMany(mappedBy = "direccion")
 	private List<Cliente> clientes;
+	
+	public Direccion() {
+		this.clientes = new ArrayList<Cliente>();
+	}
 
 	public String getId() {
 		return id;
