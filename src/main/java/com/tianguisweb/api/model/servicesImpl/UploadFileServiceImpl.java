@@ -11,11 +11,13 @@ import java.util.UUID;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.tianguisweb.api.model.services.IUploadFileService;
 
 @Service
+@Transactional
 public class UploadFileServiceImpl implements IUploadFileService {
 	
 	//private static final Logger log = LoggerFactory.getLogger(UploadFileServiceImpl.class);
