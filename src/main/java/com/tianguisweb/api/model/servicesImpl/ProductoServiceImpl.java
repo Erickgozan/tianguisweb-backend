@@ -2,18 +2,17 @@ package com.tianguisweb.api.model.servicesImpl;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tianguisweb.api.model.daos.IProductoDao;
 import com.tianguisweb.api.model.entities.Categoria;
 import com.tianguisweb.api.model.entities.Producto;
 import com.tianguisweb.api.model.services.IProductoService;
 
-@Service
 @Transactional
+@Service
 public class ProductoServiceImpl implements IProductoService{
 	
 	//Inyecta la interfaz que tiene los metodos CRUD
