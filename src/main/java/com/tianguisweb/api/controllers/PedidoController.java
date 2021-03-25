@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import com.tianguisweb.api.model.entities.Pedido;
 import com.tianguisweb.api.model.services.IPedidoService;
 
+
 @RestController
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RequestMapping(value = "/api")
 public class PedidoController {
-
+	
 	@Autowired
 	private IPedidoService pedidoService;
 
@@ -55,8 +56,9 @@ public class PedidoController {
 		}catch(DataAccessException e) {		
 			 response.put("error_500", "Hubo un error en el servidor: " + e.getLocalizedMessage());
 			 return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+			 
 		}
-		
+	
 		response.put("producto",nuevoPedido);
 		response.put("mensaje","El pedido se ha guardado con éxito");
 		
