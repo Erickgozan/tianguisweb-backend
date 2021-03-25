@@ -23,13 +23,13 @@ public class Pedido implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cliente_id")
-	@JsonIgnoreProperties({"pedidos", "hibernateLazyInitializer", "handler" })
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private Cliente cliente;
 	
 	
 	@JoinColumn(name = "pedido_id")
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonIgnoreProperties(value={"hibernateLazyInitializer","handler"}, allowSetters = true)
+	@JsonIgnoreProperties(value={"pedido","hibernateLazyInitializer","handler"})
 	private List<ItemProducto> itemProductos;
 
 	@Column(name = "precio_total")
