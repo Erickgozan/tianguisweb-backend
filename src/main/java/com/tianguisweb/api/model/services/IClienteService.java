@@ -17,5 +17,8 @@ public interface IClienteService {
 	
 	//Retonar un cliente por su id
 	public Cliente findClienteById(String id);
-
+	
+	//Buscar cliente por nombre de usuario
+   public Cliente findUsuarioByUsername(String username);
+	
 }
