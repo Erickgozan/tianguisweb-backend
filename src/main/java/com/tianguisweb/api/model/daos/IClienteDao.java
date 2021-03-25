@@ -7,5 +7,6 @@ import com.tianguisweb.api.model.entities.Cliente;
 
 @Repository
 public interface IClienteDao extends JpaRepository<Cliente, String>{
-
+			
+	public Cliente findByUsername(String username);
 }
