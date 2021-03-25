@@ -2,10 +2,10 @@ package com.tianguisweb.api.model.servicesImpl;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tianguisweb.api.model.daos.IClienteDao;
 import com.tianguisweb.api.model.entities.Cliente;
@@ -13,7 +13,7 @@ import com.tianguisweb.api.model.services.IClienteService;
 
 @Transactional
 @Service
-public class ClienteServiceImpl implements IClienteService {
+public class ClienteServiceImpl implements IClienteService{
 
 	// Inyecta la interfaz que contiene el CRUD del cliente
 	@Autowired
@@ -42,5 +42,13 @@ public class ClienteServiceImpl implements IClienteService {
 	public Cliente findClienteById(String id) {
 		return this.clienteDao.findById(id).orElse(null);
 	}
+
+	@Override
+	public Cliente findUsuarioByUsername(String username) {
+		// TODO Auto-generated method stub
+		return this.clienteDao.findByUsername(username);
+	}
+	
+	
 
 }
