@@ -73,6 +73,7 @@ public class ClienteController {
 
 		try {
 			newCustomer = this.clienteService.saveCliente(cliente);
+			
 			response.put("mensaje",
 					newCustomer.getApellidoMaterno() == null
 							? "Bienvenido(a)  " + newCustomer.getNombre() + " " + newCustomer.getApellidoPaterno()
