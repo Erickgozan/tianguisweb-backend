@@ -32,8 +32,8 @@ public class Usuario implements Serializable {
 	
 	private Boolean habilitado;	
 	
-	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	//Nombre de la nueva tabla que unira a usuarios con roles
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "usuarios_roles", joinColumns = @JoinColumn(name = "usuario_id"),
 	inverseJoinColumns = @JoinColumn(name = "role_id"), 
 	uniqueConstraints = {@UniqueConstraint(columnNames = { "usuario_id", "role_id" }) })
@@ -43,7 +43,7 @@ public class Usuario implements Serializable {
 	@Column(name = "create_at")
 	private Date createAt;
 
-	@PrePersist
+	@PrePersist 
 	public void cetateAt() {
 		this.createAt = new Date();
 	}
