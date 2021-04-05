@@ -17,26 +17,20 @@ import com.tianguisweb.api.model.services.IClienteService;
 @Component
 public class InfoAdicionalToken implements TokenEnhancer{
 
-	//@Autowired
-	//private UsuarioService usuarioService;
-	
 	@Autowired
 	private IClienteService clienteService;
 	
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-
-		//Cliente usuario = (Cliente) this.usuarioService.loadUserByUsername(authentication.getName()); 
 		
 		Cliente usuario = this.clienteService.findUsuarioByUsername(authentication.getName());
 		
 		Map<String, Object> info = new HashMap<String, Object>();
-		
-		info.put("adicional_info", "Hola usuario: ".concat(authentication.getName()));
-		
+				
 		info.put("nombre", usuario.getNombre());
-		info.put("apellido", usuario.getApellidoPaterno());
+		info.put("apellido", usuario.getApellido());
 		info.put("email", usuario.getEmail());
+		info.put("id", usuario.getId());
 		
 		((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
 		
