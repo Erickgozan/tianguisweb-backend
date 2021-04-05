@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import com.tianguisweb.api.model.entities.Pedido;
@@ -15,7 +16,7 @@ import com.tianguisweb.api.model.services.IPedidoService;
 
 
 @RestController
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = { "http://localhost:4200"})
 @RequestMapping(value = "/api")
 public class PedidoController {
 	
@@ -23,12 +24,18 @@ public class PedidoController {
 	private IPedidoService pedidoService;
 
 	// Obtener el listado de pedidos
+	@Secured({"ROLE_ADMIN","ROLE_USER"})
 	@GetMapping("/pedidos")
 	public List<Pedido> pedidosList() {
 		return this.pedidoService.finadAllPedidos();
 	}
+	
+	//Crear un metodo que liste los pedido por nombre de usuario.
+	
+	
 
 	// Obtener el pedido por su id
+	@Secured("ROLE_ADMIN")
 	@GetMapping("/pedidos/{id}")
 	public ResponseEntity<?> pedidoId(@PathVariable String id) {
 
@@ -43,7 +50,11 @@ public class PedidoController {
 		}
 	}
 	
+	//Metodo para buscar pedidos por nombre del usuario
+	
+	
 	//Guardar el pedido
+	@Secured({"ROLE_ADMIN","ROLE_USER"})
 	@PostMapping("/pedidos/create")
 	public ResponseEntity<?> sevePedido(@RequestBody Pedido pedido){
 		
