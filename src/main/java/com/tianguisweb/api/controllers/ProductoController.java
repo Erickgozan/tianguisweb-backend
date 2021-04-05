@@ -17,6 +17,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,7 @@ import com.tianguisweb.api.model.services.IProductoService;
 import com.tianguisweb.api.model.services.IUploadFileService;
 
 @RestController
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = { "http://localhost:4200"})
 @RequestMapping("/api")
 public class ProductoController {
 
@@ -51,6 +52,10 @@ public class ProductoController {
 		return productoService.finAllCategorias();
 	}
 	
+	//Crear metodo que me liste productos por categoria y por nombre
+	
+	
+	
 	// Buscar un producto por su id
 	@GetMapping("/productos/{id}")
 	public ResponseEntity<?> productId(@PathVariable String id) {
@@ -66,8 +71,9 @@ public class ProductoController {
 			return new ResponseEntity<>(producto, HttpStatus.OK);
 		}
 	}
-
+	
 	// Guardar productos
+	@Secured("ROLE_ADMIN")
 	@PostMapping("/productos/create")
 	public ResponseEntity<?> saveProduct(@Valid Producto producto, BindingResult result,
 			@RequestPart MultipartFile file[]) {
@@ -141,6 +147,7 @@ public class ProductoController {
 	}
 
 	// Actualizar el producto
+	@Secured("ROLE_ADMIN")
 	@PutMapping("productos/update/{id}")
 	public ResponseEntity<?> updateProduct(@Valid @RequestBody Producto producto, BindingResult result,
 			@PathVariable String id) {
@@ -207,6 +214,7 @@ public class ProductoController {
 	// Actualizar las imagenes
 	//nota: Se usa el @RequestParam porque la petecion se recibe desde un form-data
 	//y @RequestPart por que se piden archvios MultipartFile.
+	@Secured("ROLE_ADMIN")
 	@PutMapping("productos/image/update")
 	public ResponseEntity<?> updateImageProduct(@RequestParam String id, @RequestPart MultipartFile file[]) {
 
@@ -271,6 +279,7 @@ public class ProductoController {
 	}
  
 	// Eliminar la imagen
+	@Secured("ROLE_ADMIN")
 	@PutMapping("productos/image/delete/{id}")
 	public ResponseEntity<?> deleteImgeProduct(@PathVariable String id, @RequestParam String img) {
 
@@ -327,6 +336,7 @@ public class ProductoController {
 	}
 
 	// Eliminar el producto
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping("productos/delete/{id}")
 	public ResponseEntity<?> deleteProduct(@PathVariable String id) {
 
