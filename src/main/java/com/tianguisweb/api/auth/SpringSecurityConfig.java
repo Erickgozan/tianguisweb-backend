@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //Cuando la aplicación cliente necesita adquirir un token de acceso,
 //lo hará después de un simple proceso de autenticación impulsado por un formulario de inicio de sesión
 @Configuration
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true)//Habilita la seguridad con anotaciones en los controladores
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	//Implementa la clase UsuarioService que contiene los datos del usuario
