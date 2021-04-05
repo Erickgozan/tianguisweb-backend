@@ -5,8 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.sun.istack.NotNull;
 
 @Entity
 @Table(name = "usuarios")
@@ -20,16 +23,20 @@ public class Usuario implements Serializable {
 	private String id;
 	
 	@Column(unique = true,length = 20)
+	@NotBlank(message = "no puede estar vació")
 	private String username;	
 	
+	@NotBlank(message = "no puede estar vació")
 	private String password;
 	
 	@Transient
 	private String confirmPasword;
 	
 	@Column(unique = true)
+	@NotBlank(message = "no puede estar vació")
 	private String email;
 	
+	@NotNull
 	private Boolean habilitado;	
 	
 	//Nombre de la nueva tabla que unira a usuarios con roles
