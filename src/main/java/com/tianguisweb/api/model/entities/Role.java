@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.GenericGenerator;
-
 
 @Entity
 @Table(name = "roles")
@@ -13,8 +11,6 @@ public class Role implements Serializable{
 	private static final long serialVersionUID = -4586649236497616469L;
 
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "uuid2")
 	private String id;
 
 	@Column(unique = true, length = 20)
