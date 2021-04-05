@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tianguisweb.api.model.entities.Direccion;
 import com.tianguisweb.api.model.services.IDireccionService;
 
-@CrossOrigin(origins = { "http://localhost:4200", "*" })
+@CrossOrigin(origins = { "http://localhost:4200","https://api-sepomex.hckdrk.mx"})
 @RequestMapping(path = "/api")
 @RestController
 public class DireccionController {
@@ -34,12 +35,14 @@ public class DireccionController {
 	private IDireccionService direccionService;
 
 	// Listar las direcciones
+	@Secured("ROLE_ADMIN")
 	@GetMapping("/direcciones")
 	public List<Direccion> findAllDirecciones() {
 		return direccionService.findAllDirecciones();
 	}
 
 	// Buscar la direccion por id
+	@Secured("ROLE_ADMIN")
 	@GetMapping("/direcciones/{id}")
 	public ResponseEntity<?> findDireccionById(@PathVariable String id) {
 
@@ -56,6 +59,7 @@ public class DireccionController {
 	}
 
 	// Guardad las direcciones
+	@Secured({"ROLE_ADMIN","ROLE_USER"})
 	@PostMapping("/direcciones/save")
 	public ResponseEntity<?> saveDireccion(@Valid @RequestBody Direccion direccion, BindingResult result) {
 
@@ -90,8 +94,9 @@ public class DireccionController {
 	}
 
 	// Actualizar direcciones
+	@Secured({"ROLE_ADMIN","ROLE_USER"})
 	@PutMapping("/direcciones/update/{id}")
-	public ResponseEntity<?> updateDireccion(@PathVariable String id, @Valid @RequestBody Direccion direccion,
+	public ResponseEntity<?> updateDireccion(@Valid @RequestBody Direccion direccion, @PathVariable String id, 
 			BindingResult result) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
@@ -137,6 +142,7 @@ public class DireccionController {
 	}
 
 	// Eliminar direccion
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/direcciones/delete")
 	public ResponseEntity<?> deleteDireccione(@RequestBody Direccion direccion) {
 
