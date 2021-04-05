@@ -25,10 +25,18 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.GET,
-		"/api/productos","/api/clientes","/api/uploads/img/**")
+		"/api/productos",
+		"/api/productos/categorias",
+		"/api/productos/{id}",
+		"/api/roles",
+		"/api/uploads/img/**")
+		.permitAll()
+		.antMatchers(HttpMethod.POST,
+		"/api/clientes/create")
 		.permitAll()
 		.anyRequest()
-		.authenticated();
+		.authenticated()
+		.and().cors().configurationSource(corsConfigurationSource());
 		
 	}
 	
@@ -37,7 +45,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		public CorsConfigurationSource corsConfigurationSource() {
 
 			CorsConfiguration config = new CorsConfiguration();
-			config.setAllowedOrigins(Arrays.asList("http://localhost:4200","*"));
+			config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
 			config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 			config.setAllowCredentials(true);
 			config.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
