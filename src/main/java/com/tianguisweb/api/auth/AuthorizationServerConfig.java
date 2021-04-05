@@ -60,7 +60,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(infoAdicionalToken,accessTokenConverter()));
 		
 		endpoints.authenticationManager(authenticationManager)
-		.accessTokenConverter(accessTokenConverter()).tokenEnhancer(tokenEnhancerChain);
+		.accessTokenConverter(accessTokenConverter())
+		.tokenEnhancer(tokenEnhancerChain);
 	
 	}
 	
