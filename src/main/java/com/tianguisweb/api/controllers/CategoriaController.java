@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ import com.tianguisweb.api.model.entities.Categoria;
 import com.tianguisweb.api.model.services.ICategoriaService;
 
 @RestController
-@CrossOrigin(origins = { "http://localhost:4200", "*" })
+@CrossOrigin(origins = { "http://localhost:4200"})
 @RequestMapping("/api")
 public class CategoriaController {
 
@@ -33,6 +34,7 @@ public class CategoriaController {
 	private ICategoriaService categoriaService;
 
 	// Metodo POST para crear la categoria
+	@Secured("ROLE_ADMIN")
 	@PostMapping("productos/categorias/create")
 	public ResponseEntity<?> createCategories(@Valid @RequestBody Categoria categoria, BindingResult result) {
 
@@ -60,6 +62,7 @@ public class CategoriaController {
 	}
 
 	// Metodo PUT para editar la categoria
+	@Secured("ROLE_ADMIN")
 	@PutMapping("productos/categorias/update/{id}")
 	public ResponseEntity<?> updateCategories(@Valid @RequestBody Categoria categoria, BindingResult result,
 			@PathVariable String id) {
@@ -96,6 +99,7 @@ public class CategoriaController {
 	}
 
 	// Metodo DELETE para eliminar la categoria
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping("productos/categorias/delete/{id}")
 	public ResponseEntity<?> deleteCategories(@PathVariable String id) {
 
