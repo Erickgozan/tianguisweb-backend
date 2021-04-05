@@ -20,17 +20,12 @@ public class Cliente extends Usuario implements Serializable {
 	private String nombre;
 	
 	@NotBlank(message = "no puede estar vació")
-	@Column(name = "apellido_paterno")
-	private String apellidoPaterno;
-	
-	@Column(name = "apellido_materno")
-	private String apellidoMaterno;
+	private String apellido;
  
 	@NotBlank(message = "no puede estar vació")
 	private String telefono;
-
-	@NotNull(message = "(CP, Calle, Colonia, No. Exterior, Municipio, Estado) no pueden estar vaciós")
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+	
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinColumn(name = "direccion_id")
 	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private Direccion direccion;
@@ -53,21 +48,17 @@ public class Cliente extends Usuario implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public String getApellidoPaterno() {
-		return apellidoPaterno;
+	
+
+	public String getApellido() {
+		return apellido;
 	}
 
-	public void setApellidoPaterno(String apellidoPaterno) {
-		this.apellidoPaterno = apellidoPaterno;
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
 	}
 
-	public String getApellidoMaterno() {
-		return apellidoMaterno;
-	}
-
-	public void setApellidoMaterno(String apellidoMaterno) {
-		this.apellidoMaterno = apellidoMaterno;
-	}
 
 	public String getTelefono() {
 		return telefono;
