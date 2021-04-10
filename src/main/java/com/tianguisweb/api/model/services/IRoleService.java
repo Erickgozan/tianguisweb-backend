@@ -9,5 +9,11 @@ public interface IRoleService {
 	//Obtener el listado de roles
 	public List<Role> findAllRoles();
 	
+	public Role findByRoleNombre(String nombre);
+	
+	public void saveRole(Role role);
+	
+	
+	
 
 }
