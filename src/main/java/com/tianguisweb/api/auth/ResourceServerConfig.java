@@ -33,8 +33,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		.permitAll()
 		.antMatchers(HttpMethod.POST,
 		"/api/clientes/create",
-		"/api/oauth/google",
-		"/api/oauth/facebook")
+		"/oauth/google",
+		"/oauth/facebook")
 		.permitAll()
 		.anyRequest()
 		.authenticated()
