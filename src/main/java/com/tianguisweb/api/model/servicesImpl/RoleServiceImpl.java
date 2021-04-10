@@ -24,4 +24,16 @@ public class RoleServiceImpl implements IRoleService {
 		return this.roleDao.findAll();
 	}
 
+	@Override
+	public Role findByRoleNombre(String nombre) {
+		// TODO Auto-generated method stub
+		return (Role) this.roleDao.findByRoleNombre(nombre);
+	}
+
+	@Override
+	public void saveRole(Role role) {
+		// TODO Auto-generated method stub
+		this.roleDao.save(role);
+	}
+
 }
