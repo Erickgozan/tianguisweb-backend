@@ -20,35 +20,33 @@ import com.tianguisweb.api.model.daos.IUsuarioDao;
 import com.tianguisweb.api.model.entities.Usuario;
 
 @Transactional
-@Service
+@Service("username")
 @Primary
-public class UsuarioService implements UserDetailsService{
+public class UsuarioService implements UserDetailsService {
 
-	private final static  Logger LOG = LoggerFactory.getLogger(UsuarioService.class); 
-	
+	private final static Logger LOG = LoggerFactory.getLogger(UsuarioService.class);
+
 	@Autowired
 	private IUsuarioDao usuarioDao;
 
-	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		
-		
+
 		Usuario usuario = this.usuarioDao.findByUsername(username);
-		
-		if(usuario==null) {
-			LOG.error("Error en el login no existe el usuario: "+username+" en el sistema");
-			throw new UsernameNotFoundException("Error en el login no existe el usuario: "+username+" en el sistema");
+
+		if (usuario == null) {
+			LOG.error("Error en el login no existe el usuario: " + username + " en el sistema");
+			throw new UsernameNotFoundException(
+					"Error en el login no existe el usuario: " + username + " en el sistema");
 		}
-		
-		List<GrantedAuthority> authorities = usuario.getRoles()
-				.stream()
+
+		List<GrantedAuthority> authorities = usuario.getRoles().stream()
 				.map(rol -> new SimpleGrantedAuthority(rol.getNombre()))
-				.peek(authority -> LOG.info("Role: " + authority.getAuthority()))
-				.collect(Collectors.toList());
-		
-		return new User(usuario.getUsername(), usuario.getPassword(),
-				usuario.getHabilitado(), true, true, true, authorities);
+				.peek(authority -> LOG.info("Role: " + authority.getAuthority())).collect(Collectors.toList());
+
+		return new User(usuario.getUsername(), usuario.getPassword(), usuario.getHabilitado(), true, true, true,
+				authorities);
 	}
-	
+
+
 }
