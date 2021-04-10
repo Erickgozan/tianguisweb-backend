@@ -32,7 +32,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		"/api/uploads/img/**")
 		.permitAll()
 		.antMatchers(HttpMethod.POST,
-		"/api/clientes/create")
+		"/api/clientes/create",
+		"/api/oauth/google",
+		"/api/oauth/facebook")
 		.permitAll()
 		.anyRequest()
 		.authenticated()
