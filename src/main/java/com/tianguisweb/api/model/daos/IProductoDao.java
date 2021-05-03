@@ -3,6 +3,7 @@ package com.tianguisweb.api.model.daos;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,8 @@ public interface IProductoDao extends JpaRepository<Producto, String>{
 	
 	public List<Producto> findProductoByCategoria(Categoria categoria);
 	
+	@Modifying
+	@Query("UPDATE Producto p SET p.stock = :stock WHERE p.id = :id")
+	public void updateStock(String id,Integer stock);
+
 }
