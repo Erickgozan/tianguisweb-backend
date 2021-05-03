@@ -14,25 +14,22 @@ import org.springframework.web.bind.annotation.*;
 import com.tianguisweb.api.model.entities.Pedido;
 import com.tianguisweb.api.model.services.IPedidoService;
 
-
 @RestController
-@CrossOrigin(origins = { "http://localhost:4200"})
+@CrossOrigin(origins = { "http://localhost:4200" })
 @RequestMapping(value = "/api")
 public class PedidoController {
-	
+
 	@Autowired
 	private IPedidoService pedidoService;
 
 	// Obtener el listado de pedidos
-	@Secured({"ROLE_ADMIN","ROLE_USER"})
+	@Secured({ "ROLE_ADMIN", "ROLE_USER" })
 	@GetMapping("/pedidos")
 	public List<Pedido> pedidosList() {
 		return this.pedidoService.finadAllPedidos();
 	}
-	
-	//Crear un metodo que liste los pedido por nombre de usuario.
-	
-	
+
+	// Crear un metodo que liste los pedido por nombre de usuario.
 
 	// Obtener el pedido por su id
 	@Secured("ROLE_ADMIN")
@@ -49,32 +46,31 @@ public class PedidoController {
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 	}
-	
-	//Metodo para buscar pedidos por nombre del usuario
-	
-	
-	//Guardar el pedido
-	@Secured({"ROLE_ADMIN","ROLE_USER"})
+
+	// Metodo para buscar pedidos por nombre del usuario
+
+	// Guardar el pedido
+	@Secured({ "ROLE_ADMIN", "ROLE_USER" })
 	@PostMapping("/pedidos/create")
-	public ResponseEntity<?> sevePedido(@RequestBody Pedido pedido){
-		
+	public ResponseEntity<?> sevePedido(@RequestBody Pedido pedido) {
+
 		Pedido nuevoPedido = null;
-		Map<String,Object> response = new HashMap<String, Object>();
-		
+
+		Map<String, Object> response = new HashMap<String, Object>();
 		
 		try {
+
 			nuevoPedido = this.pedidoService.sevePedido(pedido);
-		}catch(DataAccessException e) {		
-			 response.put("error_500", "Hubo un error en el servidor: " + e.getLocalizedMessage());
-			 return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-			 
+		} catch (DataAccessException e) {
+			response.put("error_500", "Hubo un error en el servidor: " + e.getLocalizedMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
 		}
-	
-		response.put("producto",nuevoPedido);
-		response.put("mensaje","El pedido se ha guardado con éxito");
-		
-		return new ResponseEntity<>(response,HttpStatus.CREATED);
+
+		response.put("producto", nuevoPedido);
+		response.put("mensaje", "El pedido se ha guardado con éxito");
+
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
-	
 
 }
