@@ -117,6 +117,7 @@ public class ClienteController {
 			currentCustomer.setNombre(cliente.getNombre());
 			currentCustomer.setApellido(cliente.getApellido());
 			currentCustomer.setTelefono(cliente.getTelefono());
+			currentCustomer.setPassword(cliente.getPassword());
 			if(cliente.getDireccion()!=null) {
 			currentCustomer.setDireccion(cliente.getDireccion());
 			}else {
@@ -125,7 +126,7 @@ public class ClienteController {
 			}
 			currentCustomer.setPedidos(cliente.getPedidos());
 
-			newCustomer = this.clienteService.saveCliente(currentCustomer);
+			newCustomer = this.clienteService.updateCliente(currentCustomer);
 
 		} catch (DataAccessException e) {
 			response.put("error_500", "Error al actualizar el cliente: " + e.getLocalizedMessage());
