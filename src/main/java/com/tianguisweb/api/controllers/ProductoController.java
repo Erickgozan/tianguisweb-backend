@@ -2,30 +2,23 @@ package com.tianguisweb.api.controllers;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.tianguisweb.api.model.entities.Categoria;
-import com.tianguisweb.api.model.entities.Producto;
-import com.tianguisweb.api.model.services.IProductoService;
-import com.tianguisweb.api.model.services.IUploadFileService;
+import com.tianguisweb.api.model.entities.*;
+import com.tianguisweb.api.model.services.*;
 
 @RestController
 @CrossOrigin(origins = { "http://localhost:4200"})
@@ -65,7 +58,7 @@ public class ProductoController {
 
 		if (producto == null) {
 			response.put("error_404",
-					"El producto con id: '".concat(id.toString()).concat("' no se encontro en la base de datos"));
+					"El producto con id: '".concat(id).concat("' no se encontro en la base de datos"));
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(producto, HttpStatus.OK);
@@ -76,7 +69,7 @@ public class ProductoController {
 	@Secured("ROLE_ADMIN")
 	@PostMapping("/productos/create")
 	public ResponseEntity<?> saveProduct(@Valid Producto producto, BindingResult result,
-			@RequestPart MultipartFile file[]) {
+			@RequestPart MultipartFile[] file) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		Producto nuevoProducto = null;
@@ -140,6 +133,7 @@ public class ProductoController {
 			}
 		}
 		nuevoProducto = productoService.saveProducto(producto);
+		LOG.info("El precio original es " + nuevoProducto.getPrecioOriginal());
 		response.put("mensaje", "El producto se agrego correctamente");
 		response.put("producto", nuevoProducto);
 
@@ -148,7 +142,7 @@ public class ProductoController {
 
 	// Actualizar el producto
 	@Secured("ROLE_ADMIN")
-	@PutMapping("productos/update/{id}")
+	@PutMapping("/productos/update/{id}")
 	public ResponseEntity<?> updateProduct(@Valid @RequestBody Producto producto, BindingResult result,
 			@PathVariable String id) {
 
@@ -166,13 +160,14 @@ public class ProductoController {
 
 		if (productoActual == null) {
 			response.put("error_404",
-					"El producto, con id '".concat(id.toString()) + "' no se encontro en la base de datos");
+					"El producto, con id '".concat(id) + "' no se encontro en la base de datos");
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		try {
 
 			productoActual.setNombre(producto.getNombre());
 			productoActual.setPrecio(producto.getPrecio());
+			productoActual.setPrecioOriginal(producto.getPrecioOriginal());
 			productoActual.setDescripcion(producto.getDescripcion());
 			productoActual.setCaracteristicas(producto.getCaracteristicas());
 			productoActual.setStock(producto.getStock());
@@ -189,7 +184,7 @@ public class ProductoController {
 		}
 
 		response.put("producto", productoUpdate);
-		response.put("mensaje", "El producto se actualizo con éxito");
+		response.put("message", "El producto se actualizo con éxito");
 
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
@@ -206,6 +201,7 @@ public class ProductoController {
 		}
 
 		HttpHeaders cabecera = new HttpHeaders();
+		assert resource != null;
 		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
 
 		return new ResponseEntity<Resource>(resource, cabecera, HttpStatus.OK);
@@ -215,7 +211,7 @@ public class ProductoController {
 	//nota: Se usa el @RequestParam porque la petecion se recibe desde un form-data
 	//y @RequestPart por que se piden archvios MultipartFile.
 	@Secured("ROLE_ADMIN")
-	@PutMapping("productos/image/update")
+	@PutMapping("/productos/image/update")
 	public ResponseEntity<?> updateImageProduct(@RequestParam String id, @RequestPart MultipartFile file[]) {
 
 		Producto productoActual = productoService.findProductoById(id);
@@ -237,16 +233,11 @@ public class ProductoController {
 			img4 = fileService.uploadFile(file[3]);
 			img5 = fileService.uploadFile(file[4]);
 			// Elinar las imagenes repetidas(por si existen)
-			String fotoAnterior1 = productoActual.getImg1();
-			String fotoAnterior2 = productoActual.getImg2();
-			String fotoAnterior3 = productoActual.getImg3();
-			String fotoAnterior4 = productoActual.getImg4();
-			String fotoAnterior5 = productoActual.getImg5();
-			fileService.isExist(fotoAnterior1);
-			fileService.isExist(fotoAnterior2);
-			fileService.isExist(fotoAnterior3);
-			fileService.isExist(fotoAnterior4);
-			fileService.isExist(fotoAnterior5);
+			fileService.isExist(productoActual.getImg1());
+			fileService.isExist(productoActual.getImg2());
+			fileService.isExist(productoActual.getImg3());
+			fileService.isExist(productoActual.getImg4());
+			fileService.isExist(productoActual.getImg5());
 			// Establecer las nuevas imagenes
 			productoActual.setImg1(img1);
 			productoActual.setImg2(img2);
@@ -258,10 +249,9 @@ public class ProductoController {
 			response.put("error_500", "Error al subir el archivo " + e.getLocalizedMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (ArrayIndexOutOfBoundsException e) {
-				if (productoActual.getImg1().equals("")) {
+	//La razon de img1 en todos los set es porque todos son indice 0 en actualizar ya que se agregan uno por uno
+			if (productoActual.getImg1().equals(""))
 					productoActual.setImg1(img1);
-					LOG.info("Estas en el if de la imagen: " + productoActual.getImg1());
-				}
 				else if (productoActual.getImg2().equals(""))
 					productoActual.setImg2(img1);
 				else if (productoActual.getImg3().equals(""))
@@ -280,7 +270,7 @@ public class ProductoController {
  
 	// Eliminar la imagen
 	@Secured("ROLE_ADMIN")
-	@PutMapping("productos/image/delete/{id}")
+	@PutMapping("/productos/image/delete/{id}")
 	public ResponseEntity<?> deleteImgeProduct(@PathVariable String id, @RequestParam String img) {
 
 		Producto productoActual = productoService.findProductoById(id);
