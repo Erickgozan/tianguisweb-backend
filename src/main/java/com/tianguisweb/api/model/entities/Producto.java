@@ -26,6 +26,9 @@ public class Producto implements Serializable {
 
 	@NotNull(message = "no puede estar vació")
 	private Double precio;
+	
+	@Column(name = "precio_original")
+	private String precioOriginal;
 
 	@NotBlank(message = "no puede estar vació")
 	@Column(length = 2000)
@@ -70,7 +73,7 @@ public class Producto implements Serializable {
 	public void createAt() {
 		this.createAt = new Date();
 	}
-
+	
 	public String getId() {
 		return id;
 	}
@@ -93,6 +96,15 @@ public class Producto implements Serializable {
 
 	public void setPrecio(Double precio) {
 		this.precio = precio;
+	}
+	
+
+	public String getPrecioOriginal() {
+		return precioOriginal;
+	}
+
+	public void setPrecioOriginal(String precioOriginal) {
+		this.precioOriginal = precioOriginal;
 	}
 
 	public String getDescripcion() {
