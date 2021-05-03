@@ -12,6 +12,9 @@ public interface IClienteService {
 	//Crear al cliente
 	public Cliente saveCliente(Cliente cliente);
 	
+	//Actualizar cliente
+	public Cliente updateCliente(Cliente cliente);
+	
 	//Eliminar al cliente 
 	public void deleteCliente(Cliente cliente);
 	

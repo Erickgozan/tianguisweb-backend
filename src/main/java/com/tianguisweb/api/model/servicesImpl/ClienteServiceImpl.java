@@ -2,7 +2,6 @@ package com.tianguisweb.api.model.servicesImpl;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,12 @@ import com.tianguisweb.api.model.services.IClienteService;
 
 @Transactional
 @Service
-public class ClienteServiceImpl implements IClienteService{
+public class ClienteServiceImpl implements IClienteService {
 
 	// Inyecta la interfaz que contiene el CRUD del cliente
 	@Autowired
 	private IClienteDao clienteDao;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 
@@ -31,7 +30,7 @@ public class ClienteServiceImpl implements IClienteService{
 
 	// Guarda-actualiza el cliente
 	@Override
-	public Cliente saveCliente(Cliente cliente) {		
+	public Cliente saveCliente(Cliente cliente) {
 		cliente.setPassword(encoder.encode(cliente.getPassword()));
 		return this.clienteDao.save(cliente);
 	}
@@ -53,7 +52,10 @@ public class ClienteServiceImpl implements IClienteService{
 		// TODO Auto-generated method stub
 		return this.clienteDao.findByUsername(username);
 	}
-	
-	
+
+	@Override
+	public Cliente updateCliente(Cliente cliente) {
+		return this.clienteDao.save(cliente);
+	}
 
 }
