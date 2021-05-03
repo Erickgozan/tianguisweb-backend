@@ -25,32 +25,31 @@ public class Pedido implements Serializable {
 	@JoinColumn(name = "cliente_id")
 	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private Cliente cliente;
-	
-	
+
 	@JoinColumn(name = "pedido_id")
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonIgnoreProperties(value={"pedido","hibernateLazyInitializer","handler"})
+	@JsonIgnoreProperties(value = { "pedido", "hibernateLazyInitializer", "handler" })
 	private List<ItemProducto> itemProductos;
 
 	@Column(name = "precio_total")
 	private Integer precioTotal;
-	
+
 	@Column(name = "estado")
-	private EstadoPedido estado;
+	private String estado;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "create_at")
 	private Date createAt;
-	
+
 	public Pedido() {
 		this.itemProductos = new ArrayList<ItemProducto>();
 	}
-		
+
 	@PrePersist
 	public void crateAt() {
 		this.createAt = new Date();
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -66,7 +65,6 @@ public class Pedido implements Serializable {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	
 
 	public List<ItemProducto> getItemProductos() {
 		return itemProductos;
@@ -84,14 +82,14 @@ public class Pedido implements Serializable {
 		this.precioTotal = precioTotal;
 	}
 
-	public EstadoPedido getEstado() {
+	public String getEstado() {
 		return estado;
 	}
 
-	public void setEstado(EstadoPedido estado) {
+	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	
+
 	public Date getCreateAt() {
 		return createAt;
 	}
@@ -99,8 +97,5 @@ public class Pedido implements Serializable {
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
-	
-	
-	
 
 }
