@@ -29,7 +29,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		"/api/productos/categorias",
 		"/api/productos/{id}",
 		"/api/roles",
-		"/api/uploads/img/**")
+		"/api/uploads/img/**",
+		"/api/view/img/**",
+		"/api/slider")
 		.permitAll()
 		.antMatchers(HttpMethod.POST,
 		"/api/clientes/create")
