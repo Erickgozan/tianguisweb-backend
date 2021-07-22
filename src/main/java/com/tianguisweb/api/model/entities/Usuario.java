@@ -22,10 +22,6 @@ public class Usuario implements Serializable {
 	@GenericGenerator(name = "UUID", strategy = "uuid2")
 	private String id;
 	
-	@Column(unique = true,length = 20)
-	@NotBlank(message = "no puede estar vació")
-	private String username;	
-	
 	@NotBlank(message = "no puede estar vació")
 	private String password;
 	
@@ -61,14 +57,6 @@ public class Usuario implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	public String getPassword() {
