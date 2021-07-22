@@ -31,14 +31,14 @@ public class UsuarioService implements UserDetailsService{
 
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		
 		
-		Usuario usuario = this.usuarioDao.findByUsername(username);
+		Usuario usuario = this.usuarioDao.findByEmail(email);
 		
 		if(usuario==null) {
-			LOG.error("Error en el login no existe el usuario: "+username+" en el sistema");
-			throw new UsernameNotFoundException("Error en el login no existe el usuario: "+username+" en el sistema");
+			LOG.error("Error en el login no existe el usuario: "+email+" en el sistema");
+			throw new UsernameNotFoundException("Error en el login no existe el usuario: "+email+" en el sistema");
 		}
 		
 		List<GrantedAuthority> authorities = usuario.getRoles()
@@ -47,7 +47,7 @@ public class UsuarioService implements UserDetailsService{
 				.peek(authority -> LOG.info("Role: " + authority.getAuthority()))
 				.collect(Collectors.toList());
 		
-		return new User(usuario.getUsername(), usuario.getPassword(),
+		return new User(usuario.getEmail(), usuario.getPassword(),
 				usuario.getHabilitado(), true, true, true, authorities);
 	}
 	
