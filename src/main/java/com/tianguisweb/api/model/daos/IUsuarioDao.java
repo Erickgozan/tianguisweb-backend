@@ -6,6 +6,7 @@ import com.tianguisweb.api.model.entities.Usuario;
 
 public interface IUsuarioDao extends JpaRepository<Usuario, String>{
 		
-	public Usuario findByUsername(String username);
-	
+	 //Usuario findByUsername(String username);
+
+	 Usuario findByEmail(String email);
 }
