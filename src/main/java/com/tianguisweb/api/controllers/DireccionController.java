@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tianguisweb.api.model.entities.Direccion;
 import com.tianguisweb.api.model.services.IDireccionService;
 
-@CrossOrigin(origins = { "http://localhost:4200","https://api-sepomex.hckdrk.mx"})
+@CrossOrigin(origins = {"http://localhost:4200","https://api-sepomex.hckdrk.mx"})
 @RequestMapping(path = "/api")
 @RestController
 public class DireccionController {
@@ -42,7 +42,7 @@ public class DireccionController {
 	}
 
 	// Buscar la direccion por id
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_ADMIN")	
 	@GetMapping("/direcciones/{id}")
 	public ResponseEntity<?> findDireccionById(@PathVariable String id) {
 
