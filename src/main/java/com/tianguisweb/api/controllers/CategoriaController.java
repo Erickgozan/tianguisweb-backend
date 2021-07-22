@@ -38,8 +38,8 @@ public class CategoriaController {
 	@PostMapping("productos/categorias/create")
 	public ResponseEntity<?> createCategories(@Valid @RequestBody Categoria categoria, BindingResult result) {
 
-		Map<String, Object> response = new HashMap<String, Object>();
-		Categoria nuevaCategoria = null;
+		Map<String, Object> response = new HashMap<>();
+		Categoria nuevaCategoria;
 
 		if (result.hasErrors()) {
 
@@ -53,7 +53,7 @@ public class CategoriaController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar el insert a la base de datos");
 			response.put("error", e.getMostSpecificCause().getLocalizedMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.put("mensaje", "Se agrego correctamente la categoria");
 		response.put("categoria", nuevaCategoria);
@@ -68,8 +68,8 @@ public class CategoriaController {
 			@PathVariable String id) {
 
 		Categoria categoriaActural = this.categoriaService.findCategoriaById(id);
-		Categoria nuevaCategoria = null;
-		Map<String, Object> response = new HashMap<String, Object>();
+		Categoria nuevaCategoria;
+		Map<String, Object> response = new HashMap<>();
 		if (result.hasErrors()) {
 			List<String> errores = result.getFieldErrors().stream()
 					.map(e -> "El campo'" + e.getField() + "'" + e.getDefaultMessage()).collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class CategoriaController {
 
 		if (categoriaActural == null) {
 			response.put("error_404",
-					"El producto, con id '".concat(id.toString()) + "' no se encontro en la base de datos");
+					"El producto, con id '".concat(id) + "' no se encontro en la base de datos");
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		try {
@@ -103,11 +103,11 @@ public class CategoriaController {
 	@DeleteMapping("productos/categorias/delete/{id}")
 	public ResponseEntity<?> deleteCategories(@PathVariable String id) {
 
-		Map<String, Object> response = new HashMap<String, Object>();
+		Map<String, Object> response = new HashMap<>();
 		Categoria categoria = this.categoriaService.findCategoriaById(id);
 		try {
 			if (categoria == null) {
-				response.put("error_404", "La categoria que desea eliminar con id '".concat(id.toString())
+				response.put("error_404", "La categoria que desea eliminar con id '".concat(id)
 						.concat("' no se encotro en la base de datos"));
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			} else {
