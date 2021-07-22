@@ -11,6 +11,9 @@ import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
@@ -25,7 +28,7 @@ import com.tianguisweb.api.model.services.*;
 @RequestMapping("/api")
 public class ProductoController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProductoController.class);
+	private final Logger LOG = LoggerFactory.getLogger(ProductoController.class);
 
 	@Autowired
 	private IProductoService productoService;
@@ -39,21 +42,55 @@ public class ProductoController {
 		return productoService.findAllProductos();
 	}
 
-	//Listar categorias
-	@GetMapping("productos/categorias")
+    // Listar productos paginados
+    @GetMapping("/productos/page/{page}")
+    public Page<Producto> productList(@PathVariable Integer page) {
+        Pageable pageable = PageRequest.of(page,6);
+        return this.productoService.findAllPageProductos(pageable);
+    }
+
+    //Crear metodo que me liste productos por nombre,categoria y oferta
+
+    //Listar de productos por nombre
+	@GetMapping(value = "/productos/buscar/nombre",params = "nombre")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Producto> findProductosByNombre(@RequestParam String nombre){
+		return this.productoService.findAllProductsByNombre(nombre);
+	}
+
+	//Listar de productos por nombre
+	@GetMapping(value = "/productos/buscar/datos",params = "datos")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Producto> findProductosByDatos(@RequestParam String datos){
+		return this.productoService.findAllProductosByDatos(datos);
+	}
+
+    //Listar de productos por categoria
+	@GetMapping(value = "/productos/buscar/categoria")
+	@ResponseStatus(HttpStatus.OK)
+    public List<Producto> findProductosByCategoria(Categoria categoria){
+	    return  this.productoService.findProductosByCategoria(categoria );
+    }
+
+    //Lista de producto por oferta
+    @GetMapping(value = "/productos/buscar/oferta",params = "oferta")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Producto> findProductosByOferta(@RequestParam Boolean oferta){
+		return this.productoService.findProductosByOferta(oferta);
+	}
+
+    //Listar categorias
+	@GetMapping("/productos/categorias")
 	public List<Categoria> categoriaList() {
 		return productoService.finAllCategorias();
 	}
-	
-	//Crear metodo que me liste productos por categoria y por nombre
-	
-	
-	
+
+
 	// Buscar un producto por su id
 	@GetMapping("/productos/{id}")
 	public ResponseEntity<?> productId(@PathVariable String id) {
 
-		Map<String, Object> response = new HashMap<String, Object>();
+		Map<String, Object> response = new HashMap<>();
 		Producto producto = productoService.findProductoById(id);
 
 		if (producto == null) {
@@ -71,8 +108,8 @@ public class ProductoController {
 	public ResponseEntity<?> saveProduct(@Valid Producto producto, BindingResult result,
 			@RequestPart MultipartFile[] file) {
 
-		Map<String, Object> response = new HashMap<String, Object>();
-		Producto nuevoProducto = null;
+		Map<String, Object> response = new HashMap<>();
+		Producto nuevoProducto;
 		String img1 = "", img2 = "", img3 = "", img4 = "", img5 = "";
 
 		if (result.hasErrors()) {
@@ -133,7 +170,6 @@ public class ProductoController {
 			}
 		}
 		nuevoProducto = productoService.saveProducto(producto);
-		LOG.info("El precio original es " + nuevoProducto.getPrecioOriginal());
 		response.put("mensaje", "El producto se agrego correctamente");
 		response.put("producto", nuevoProducto);
 
@@ -146,9 +182,9 @@ public class ProductoController {
 	public ResponseEntity<?> updateProduct(@Valid @RequestBody Producto producto, BindingResult result,
 			@PathVariable String id) {
 
-		Map<String, Object> response = new HashMap<String, Object>();
+		Map<String, Object> response = new HashMap<>();
 		Producto productoActual = productoService.findProductoById(id);
-		Producto productoUpdate = null;
+		Producto productoUpdate;
 
 		if (result.hasErrors()) {
 			List<String> errores = result.getFieldErrors().stream()
@@ -204,7 +240,7 @@ public class ProductoController {
 		assert resource != null;
 		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
 
-		return new ResponseEntity<Resource>(resource, cabecera, HttpStatus.OK);
+		return new ResponseEntity<>(resource, cabecera, HttpStatus.OK);
 	}
 
 	// Actualizar las imagenes
@@ -212,16 +248,16 @@ public class ProductoController {
 	//y @RequestPart por que se piden archvios MultipartFile.
 	@Secured("ROLE_ADMIN")
 	@PutMapping("/productos/image/update")
-	public ResponseEntity<?> updateImageProduct(@RequestParam String id, @RequestPart MultipartFile file[]) {
+	public ResponseEntity<?> updateImageProduct(@RequestParam String id, @RequestPart MultipartFile[] file) {
 
 		Producto productoActual = productoService.findProductoById(id);
-		Producto fotoUpdate = null;
-		Map<String, Object> response = new HashMap<String, Object>();
-		String img1 = null, img2 = null, img3 = null, img4 = null, img5 = null;
+		Producto fotoUpdate;
+		Map<String, Object> response = new HashMap<>();
+		String img1 = null, img2, img3, img4, img5;
 
 		if (productoActual == null) {
 			response.put("error_404",
-					"El producto con id: '".concat(id.toString()).concat(" no se encontro en la base de datos"));
+					"El producto con id: '".concat(id).concat(" no se encontro en la base de datos"));
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
@@ -274,12 +310,12 @@ public class ProductoController {
 	public ResponseEntity<?> deleteImgeProduct(@PathVariable String id, @RequestParam String img) {
 
 		Producto productoActual = productoService.findProductoById(id);
-		Map<String, Object> response = new HashMap<String, Object>();
+		Map<String, Object> response = new HashMap<>();
 		
 		try {
 			//Si el producto no se encuentra
 			if (productoActual == null) {
-				response.put("error_404", "El producto que desea eliminar con id '".concat(id.toString())
+				response.put("error_404", "El producto que desea eliminar con id '".concat(id)
 						.concat("' no se encotro en la base de datos"));
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			} else {
@@ -287,19 +323,15 @@ public class ProductoController {
 					fileService.isExist(productoActual.getImg1());
 					productoActual.setImg1("");
 				} else if (productoActual.getImg2().equals(img)) {
-					
 					fileService.isExist(productoActual.getImg2());
 					productoActual.setImg2("");
 				} else if (productoActual.getImg3().equals(img)) {
-					
 					fileService.isExist(productoActual.getImg3());
 					productoActual.setImg3("");
 				} else if (productoActual.getImg4().equals(img)) {
-					
 					fileService.isExist(productoActual.getImg4());
 					productoActual.setImg4("");
 				} else if (productoActual.getImg5().equals(img)) {
-					
 					fileService.isExist(productoActual.getImg5());
 					productoActual.setImg5("");
 				}
@@ -330,11 +362,11 @@ public class ProductoController {
 	@DeleteMapping("productos/delete/{id}")
 	public ResponseEntity<?> deleteProduct(@PathVariable String id) {
 
-		Map<String, Object> response = new HashMap<String, Object>();
+		Map<String, Object> response = new HashMap<>();
 		Producto producto = productoService.findProductoById(id);
 
 		if (producto == null) {
-			response.put("error_404", "El producto que desea eliminar con id '".concat(id.toString())
+			response.put("error_404", "El producto que desea eliminar con id '".concat(id)
 					.concat("' no se encotro en la base de datos"));
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		} else {
@@ -346,7 +378,7 @@ public class ProductoController {
 			fileService.isExist(producto.getImg5());
 		}
 
-		response.put("mensaje", "El producto con id '".concat(id.toString()).concat("' se ha eliminado correctamente"));
+		response.put("mensaje", "El producto con id '".concat(id).concat("' se ha eliminado correctamente"));
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
