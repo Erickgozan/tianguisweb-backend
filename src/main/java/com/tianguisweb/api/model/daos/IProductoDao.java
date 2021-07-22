@@ -14,12 +14,19 @@ import com.tianguisweb.api.model.entities.Producto;
 public interface IProductoDao extends JpaRepository<Producto, String>{
 		
 	@Query("FROM Categoria")
-	public List<Categoria> findAllCategorias();
-	
-	public List<Producto> findProductoByCategoria(Categoria categoria);
-	
+	 List<Categoria> findAllCategorias();
+
+	 List<Producto> findByNombreContainingIgnoreCase(String nombre);
+
+	@Query("FROM Producto p WHERE p.nombre like %?1% OR  p.caracteristicas like %?1% OR p.descripcion like %?1%")
+	List<Producto> findProductosByDatos(String datos);
+
+	List<Producto> findProductosByCategoria(Categoria categoria);
+
+	List<Producto> findProductosByOferta(Boolean oferta);
+
 	@Modifying
 	@Query("UPDATE Producto p SET p.stock = :stock WHERE p.id = :id")
-	public void updateStock(String id,Integer stock);
+	 void updateStock(String id,Integer stock);
 
 }
