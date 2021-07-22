@@ -2,6 +2,7 @@ package com.tianguisweb.api.model.servicesImpl;
 
 import java.util.List;
 
+import com.tianguisweb.api.model.entities.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,14 +49,18 @@ public class ClienteServiceImpl implements IClienteService {
 	}
 
 	@Override
-	public Cliente findUsuarioByUsername(String username) {
-		// TODO Auto-generated method stub
-		return this.clienteDao.findByUsername(username);
+	public Cliente findUsuarioByEmail(String email) {
+		return this.clienteDao.findByEmail(email);
 	}
 
 	@Override
 	public Cliente updateCliente(Cliente cliente) {
 		return this.clienteDao.save(cliente);
+	}
+
+	@Override
+	public void updatePassword(String password, String id) {
+		 this.clienteDao.updateUsuarioPassword(encoder.encode(password),id);
 	}
 
 }
