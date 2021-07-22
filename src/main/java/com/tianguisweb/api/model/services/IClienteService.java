@@ -3,25 +3,29 @@ package com.tianguisweb.api.model.services;
 import java.util.List;
 
 import com.tianguisweb.api.model.entities.Cliente;
+import com.tianguisweb.api.model.entities.Usuario;
 
 public interface IClienteService {
 	
 	//Retorna la lista de clientes
-	public List<Cliente> findAll();
+	List<Cliente> findAll();
 	
 	//Crear al cliente
-	public Cliente saveCliente(Cliente cliente);
+	Cliente saveCliente(Cliente cliente);
 	
 	//Actualizar cliente
-	public Cliente updateCliente(Cliente cliente);
+	Cliente updateCliente(Cliente cliente);
+
+	//Actualizar la contraseña del cliente
+	void updatePassword(String password, String id);
 	
 	//Eliminar al cliente 
-	public void deleteCliente(Cliente cliente);
+	void deleteCliente(Cliente cliente);
 	
 	//Retonar un cliente por su id
-	public Cliente findClienteById(String id);
+	Cliente findClienteById(String id);
 	
 	//Buscar cliente por nombre de usuario
-   public Cliente findUsuarioByUsername(String username);
+	Cliente findUsuarioByEmail(String email);
 	
 }
