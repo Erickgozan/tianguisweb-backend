@@ -139,7 +139,7 @@ public class ClienteController {
 	}
 
 
-	// ACTUALIZAR LA CONTRASEÑA
+	// ACTUALIZAR EL CONTRASEÑA
 	@PostMapping(value = "/clientes/update/{id}",params = "password")
 	public ResponseEntity<?> updatePassword(@PathVariable String id,@RequestParam String password) {
 
